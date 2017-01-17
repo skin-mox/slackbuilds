@@ -1,0 +1,4 @@
+libmodplug >= 0.8.8.5-x86_64-1gl
+physfs >= 2.0.3-x86_64-1gl
+speex >= 1.2rc2-x86_64-1gl
+

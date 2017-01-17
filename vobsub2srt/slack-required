@@ -1,0 +1,13 @@
+gcc >= 5.4.0_multilib-x86_64-1alien
+gcc-g++ >= 5.4.0_multilib-x86_64-1alien
+giflib >= 5.1.1-x86_64-1
+glibc-solibs >= 2.24_multilib-x86_64-2alien
+leptonica >= 1.74-x86_64-1sm
+libjpeg-turbo >= 1.5.0-x86_64-1
+libpng >= 1.6.23-x86_64-1
+libtiff >= 4.0.6-x86_64-1
+libwebp >= 0.5.1-x86_64-1gl
+openjpeg >= 2.1.0-x86_64-1
+tesseract >= 3.04.00-x86_64-1sm
+xz >= 5.2.2-x86_64-1
+zlib >= 1.2.8-x86_64-1

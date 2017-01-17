@@ -1,0 +1,12 @@
+--- a/AstroMenaceSource/Loading.cpp	
++++ a/AstroMenaceSource/Loading.cpp	
+@@ -2013,6 +2013,9 @@ void LoadGameData(int LoadType)
+ 
+ 	for (int i=0; i<CurrentListCount; i++)
+ 	{
++		if (!strlen(CurrentList[i].FileName))
++            continue;
++        
+ 		switch (CurrentList[i].FileType)
+ 		{
+ 			// 2d текстуры

@@ -1,0 +1,75 @@
+From: Simon McVittie <smcv@debian.org>
+Date: Fri, 24 Feb 2012 09:12:10 +0000
+Subject: Add sv_dorestart, which can be set by game code to restart the map
+
+Origin: OpenArena
+Forwarded: no
+---
+ code/server/server.h   | 1 +
+ code/server/sv_ccmds.c | 6 +++++-
+ code/server/sv_init.c  | 1 +
+ code/server/sv_main.c  | 1 +
+ 4 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/code/server/server.h b/code/server/server.h
+index 407d6ab..f4682eb 100644
+--- a/code/server/server.h
++++ b/code/server/server.h
+@@ -286,6 +286,7 @@ extern	cvar_t	*sv_dlRate;
+ extern	cvar_t	*sv_minPing;
+ extern	cvar_t	*sv_maxPing;
+ extern	cvar_t	*sv_gametype;
++extern	cvar_t	*sv_dorestart;
+ extern	cvar_t	*sv_pure;
+ extern	cvar_t	*sv_floodProtect;
+ extern	cvar_t	*sv_lanForceRate;
+diff --git a/code/server/sv_ccmds.c b/code/server/sv_ccmds.c
+index 1b72339..6fb375b 100644
+--- a/code/server/sv_ccmds.c
++++ b/code/server/sv_ccmds.c
+@@ -173,6 +173,9 @@ static void SV_Map_f( void ) {
+ 	// force latched values to get set
+ 	Cvar_Get ("g_gametype", "0", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH );
+ 
++	//Notice that we have done a restart
++	sv_dorestart->integer = 0;
++
+ 	cmd = Cmd_Argv(0);
+ 	if( Q_stricmpn( cmd, "sp", 2 ) == 0 ) {
+ 		Cvar_SetValue( "g_gametype", GT_SINGLE_PLAYER );
+@@ -262,9 +265,10 @@ static void SV_MapRestart_f( void ) {
+ 
+ 	// check for changes in variables that can't just be restarted
+ 	// check for maxclients change
+-	if ( sv_maxclients->modified || sv_gametype->modified ) {
++	if ( sv_maxclients->modified || sv_gametype->modified || sv_dorestart->integer ) {
+ 		char	mapname[MAX_QPATH];
+ 
++		sv_dorestart->integer = 0;
+ 		Com_Printf( "variable change -- restarting.\n" );
+ 		// restart the map the slow way
+ 		Q_strncpyz( mapname, Cvar_VariableString( "mapname" ), sizeof( mapname ) );
+diff --git a/code/server/sv_init.c b/code/server/sv_init.c
+index 7332180..453e1b1 100644
+--- a/code/server/sv_init.c
++++ b/code/server/sv_init.c
+@@ -638,6 +638,7 @@ void SV_Init (void)
+ 	Cvar_Get ("fraglimit", "20", CVAR_SERVERINFO);
+ 	Cvar_Get ("timelimit", "0", CVAR_SERVERINFO);
+ 	sv_gametype = Cvar_Get ("g_gametype", "0", CVAR_SERVERINFO | CVAR_LATCH );
++	sv_dorestart = Cvar_Get ("sv_dorestart", "0", 0);
+ 	Cvar_Get ("sv_keywords", "", CVAR_SERVERINFO);
+ 	sv_mapname = Cvar_Get ("mapname", "nomap", CVAR_SERVERINFO | CVAR_ROM);
+ 	sv_privateClients = Cvar_Get ("sv_privateClients", "0", CVAR_SERVERINFO);
+diff --git a/code/server/sv_main.c b/code/server/sv_main.c
+index ed50707..b85b818 100644
+--- a/code/server/sv_main.c
++++ b/code/server/sv_main.c
+@@ -54,6 +54,7 @@ cvar_t	*sv_dlRate;
+ cvar_t	*sv_minPing;
+ cvar_t	*sv_maxPing;
+ cvar_t	*sv_gametype;
++cvar_t	*sv_dorestart;
+ cvar_t	*sv_pure;
+ cvar_t	*sv_floodProtect;
+ cvar_t	*sv_lanForceRate; // dedicated 1 (LAN) server forces local client rates to 99999 (bug #491)

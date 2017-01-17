@@ -1,0 +1,4 @@
+acl >= 2.2.52-x86_64-1
+attr >= 2.4.47-x86_64-1
+glibc-solibs >= 2.24_multilib-x86_64-2alien
+zlib >= 1.2.8-x86_64-1

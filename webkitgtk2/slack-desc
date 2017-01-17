@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+          |-----handy-ruler------------------------------------------------------|
+webkitgtk2: WebKitGTK+ (GTK+ port of the WebKit)
+webkitgtk2:
+webkitgtk2: WebKit/GTK+ is the new GTK+ port of the WebKit, an open-source web
+webkitgtk2: content engine that powers numerous applications such as web
+webkitgtk2: browsers, email clients, feed readers, web and text editors, and a
+webkitgtk2: whole lot more.
+webkitgtk2:
+webkitgtk2: This builds the GTK2 interface.
+webkitgtk2:
+webkitgtk2: http://webkitgtk.org/
+webkitgtk2:

@@ -1,0 +1,6 @@
+attr >= 2.4.47-x86_64-1
+bzip2 >= 1.0.6-x86_64-1
+file >= 5.28-x86_64-1
+glibc-solibs >= 2.24_multilib-x86_64-2alien
+libcap >= 2.22-x86_64-1
+zlib >= 1.2.8-x86_64-1

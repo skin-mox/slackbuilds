@@ -1,0 +1,29 @@
+From: Simon McVittie <smcv@debian.org>
+Date: Tue, 20 Jan 2015 09:23:49 +0000
+Subject: ui: reinstate minimal code to determine whether this is the demo
+
+---
+ code/q3_ui/ui_gameinfo.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/code/q3_ui/ui_gameinfo.c b/code/q3_ui/ui_gameinfo.c
+index d839723..ea84651 100644
+--- a/code/q3_ui/ui_gameinfo.c
++++ b/code/q3_ui/ui_gameinfo.c
+@@ -806,10 +806,16 @@ UI_InitGameinfo
+ ===============
+ */
+ void UI_InitGameinfo( void ) {
++	char basegame[MAX_INFO_STRING];
+ 
+ 	UI_InitMemory();
+ 	UI_LoadArenas();
+ 	UI_LoadBots();
+ 
+ 	uis.demoversion = qfalse;
++
++	trap_Cvar_VariableStringBuffer("com_basegame", basegame, sizeof(basegame));
++	if (!strcmp (basegame, "demoq3")) {
++		uis.demoversion = qtrue;
++	}
+ }

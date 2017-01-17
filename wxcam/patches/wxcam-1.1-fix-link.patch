@@ -1,0 +1,29 @@
+--- a/configure.ac~	2013-01-14 19:29:04.691398124 +0800
++++ b/configure.ac	2013-01-14 19:31:31.415232817 +0800
+@@ -33,6 +33,8 @@
+ WX_CPPFLAGS="`$WXCONFIG --cppflags`"
+ WX_CXXFLAGS="`$WXCONFIG --cxxflags`"
+ WX_LIBS="`$WXCONFIG --libs`"
++
++PKG_CHECK_MODULES(WXCAM, [alsa mjpegtools x11])
+  
+ AC_SUBST(WX_CPPFLAGS)
+ AC_SUBST(WX_CXXFLAGS)
+--- a/src/Makefile.am.0000	2011-06-05 15:55:00.000000000 +0800
++++ b/src/Makefile.am	2013-01-14 19:28:39.230732697 +0800
+@@ -80,14 +80,7 @@
+ 	resolution.h \
+ 	tv.xpm
+ 
+-wxcam_LDFLAGS = \
+-	-lxvidcore \
+-	-llavjpeg \
+-	-lmjpegutils \
+-	-lX11 \
+-	-lasound
+-
+ wxcam_LDADD = \
+-	 \
++	$(WXCAM_LIBS) -llavjpeg -lpthread -lxvidcore \
+ 	$(WX_LIBS)
+ 

@@ -1,0 +1,175 @@
+From: Simon McVittie <smcv@debian.org>
+Date: Thu, 4 Aug 2011 08:36:09 +0100
+Subject: Add a special vmMagic that causes equivalent native code to be
+ loaded instead
+
+This means that mods can build everything from source without relying on
+the non-GPL q3lcc compiler. By padding the fake QVM with bytes chosen
+to match the CRC-32 of the upstream-released QVM, it's even possible to
+be network-compatible with the upstream one, and so play on pure servers.
+
+If the magic number in the fake QVM file is immediately followed by a
+non-empty string (e.g. "pak0"), we try using it as a subdirectory name,
+so we end up loading something like pak0/qagamex86_64.so; otherwise we
+just use the base name, as if for VMI_NATIVE. This is necessary for mods
+like OpenArena, where the game-code for 0.8.1 and 0.8.5 is not
+network-compatible, so 0.8.5 clients on a 0.8.1 pure server need to load
+the 0.8.1 game-code.
+
+Origin: vendor, Debian
+Forwarded: no
+---
+ code/qcommon/files.c   |  6 +++---
+ code/qcommon/qcommon.h |  2 +-
+ code/qcommon/qfiles.h  |  4 ++++
+ code/qcommon/vm.c      | 57 +++++++++++++++++++++++++++++++++++++++++++++++++-
+ 4 files changed, 64 insertions(+), 5 deletions(-)
+
+diff --git a/code/qcommon/files.c b/code/qcommon/files.c
+index eb51faa..b56411c 100644
+--- a/code/qcommon/files.c
++++ b/code/qcommon/files.c
+@@ -1400,7 +1400,7 @@ Return the searchpath in "startSearch".
+ =================
+ */
+ 
+-int FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, int enableDll)
++int FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, int enableDll, int forceDll)
+ {
+ 	searchpath_t *search, *lastSearch;
+ 	directory_t *dir;
+@@ -1424,7 +1424,7 @@ int FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, i
+ 
+ 	while(search)
+ 	{
+-		if(search->dir && !fs_numServerPaks)
++		if(search->dir && (forceDll || !fs_numServerPaks))
+ 		{
+ 			dir = search->dir;
+ 
+@@ -1447,7 +1447,7 @@ int FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, i
+ 				return VMI_COMPILED;
+ 			}
+ 		}
+-		else if(search->pack)
++		else if(search->pack && !forceDll)
+ 		{
+ 			pack = search->pack;
+ 
+diff --git a/code/qcommon/qcommon.h b/code/qcommon/qcommon.h
+index 414b341..d0cc9d6 100644
+--- a/code/qcommon/qcommon.h
++++ b/code/qcommon/qcommon.h
+@@ -624,7 +624,7 @@ qboolean FS_FileExists( const char *file );
+ 
+ qboolean FS_CreatePath (char *OSPath);
+ 
+-int FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, int enableDll);
++int FS_FindVM(void **startSearch, char *found, int foundlen, const char *name, int enableDll, int forceDll);
+ 
+ char   *FS_BuildOSPath( const char *base, const char *game, const char *qpath );
+ qboolean FS_CompareZipChecksum(const char *zipfile);
+diff --git a/code/qcommon/qfiles.h b/code/qcommon/qfiles.h
+index 9f2b5fb..3dc8fbb 100644
+--- a/code/qcommon/qfiles.h
++++ b/code/qcommon/qfiles.h
+@@ -52,6 +52,10 @@ QVM files
+ 
+ #define	VM_MAGIC			0x12721444
+ #define	VM_MAGIC_VER2	0x12721445
++
++/* 'NTVE', but backwards because the QVM format is little-endian */
++#define	VM_MAGIC_USE_NATIVE	0x4556544E
++
+ typedef struct {
+ 	int		vmMagic;
+ 
+diff --git a/code/qcommon/vm.c b/code/qcommon/vm.c
+index e8818a6..f1fc425 100644
+--- a/code/qcommon/vm.c
++++ b/code/qcommon/vm.c
+@@ -371,6 +371,7 @@ vmHeader_t *VM_LoadQVM( vm_t *vm, qboolean alloc, qboolean unpure)
+ 	union {
+ 		vmHeader_t	*h;
+ 		void				*v;
++		unsigned char	*bytes;
+ 	} header;
+ 
+ 	// load the image
+@@ -391,6 +392,54 @@ vmHeader_t *VM_LoadQVM( vm_t *vm, qboolean alloc, qboolean unpure)
+ 	// show where the qvm was loaded from
+ 	FS_Which(filename, vm->searchPath);
+ 
++	if (LittleLong( header.h->vmMagic ) == VM_MAGIC_USE_NATIVE) {
++		char module[MAX_OSPATH];
++		char filename[MAX_OSPATH];
++		int retval = -1;
++		void *startSearch = NULL;
++
++		Com_Printf("...which has vmMagic VM_MAGIC_USE_NATIVE.\n");
++
++		if (header.bytes[sizeof(int)] != '\0') {
++			// FS_ReadFileDir guarantees a trailing \0, even if
++			// there wasn't actually one in the file
++			Com_sprintf(module, sizeof(module), "%s/%s",
++				header.bytes + sizeof(int), vm->name);
++			Com_Printf("... trying %s\n", module);
++			startSearch = NULL;
++
++			if (FS_CheckDirTraversal(module)) {
++				Com_Printf("Directory traversal detected! %s\n", module);
++				VM_Free(vm);
++				return NULL;
++			}
++
++			retval = FS_FindVM(&startSearch, filename, sizeof(filename), module, qtrue, qtrue);
++		}
++
++		if (retval != VMI_NATIVE) {
++			Com_sprintf(module, sizeof(module), "%s", vm->name);
++			Com_Printf("... trying %s\n", module);
++			startSearch = NULL;
++
++			retval = FS_FindVM(&startSearch, filename, sizeof(filename), module, qtrue, qtrue);
++		}
++
++		if (retval != VMI_NATIVE) {
++			VM_Free(vm);
++			return NULL;
++		}
++
++		Com_Printf("Loading DLL file %s instead.\n", filename);
++		vm->dllHandle = Sys_LoadGameDll(filename, &vm->entryPoint, VM_DllSyscall);
++		if (!vm->dllHandle) {
++			Com_Printf("Failed to load DLL %s.\n", filename);
++			VM_Free(vm);
++			return NULL;
++		}
++		return header.h;
++	}
++
+ 	if( LittleLong( header.h->vmMagic ) == VM_MAGIC_VER2 ) {
+ 		Com_Printf( "...which has vmMagic VM_MAGIC_VER2\n" );
+ 
+@@ -610,7 +659,7 @@ vm_t *VM_Create( const char *module, intptr_t (*systemCalls)(intptr_t *),
+ 
+ 	do
+ 	{
+-		retval = FS_FindVM(&startSearch, filename, sizeof(filename), module, (interpret == VMI_NATIVE));
++		retval = FS_FindVM(&startSearch, filename, sizeof(filename), module, (interpret == VMI_NATIVE), qfalse);
+ 		
+ 		if(retval == VMI_NATIVE)
+ 		{
+@@ -642,6 +691,12 @@ vm_t *VM_Create( const char *module, intptr_t (*systemCalls)(intptr_t *),
+ 
+ 	vm->systemCall = systemCalls;
+ 
++	if ( vm->dllHandle ) {
++		// it was replaced by a DLL anyway
++		FS_FreeFile( header );
++		return vm;
++	}
++
+ 	// allocate space for the jump targets, which will be filled in by the compile/prep functions
+ 	vm->instructionCount = header->instructionCount;
+ 	vm->instructionPointers = Hunk_Alloc(vm->instructionCount * sizeof(*vm->instructionPointers), h_high);

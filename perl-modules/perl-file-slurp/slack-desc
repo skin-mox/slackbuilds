@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+               |-----handy-ruler------------------------------------------------------|
+perl-file-slurp: perl-File-Slurp (File::Slurp perl module)
+perl-file-slurp:
+perl-file-slurp: This module provides subs that allow you to read or
+perl-file-slurp: write entire files with one simple call. They are
+perl-file-slurp: designed to be simple to use, have flexible ways to
+perl-file-slurp: pass in or get the file contents, and to be very
+perl-file-slurp: efficient.
+perl-file-slurp:
+perl-file-slurp: Homepage: http://search.cpan.org/dist/File-Slurp
+perl-file-slurp:
+perl-file-slurp:

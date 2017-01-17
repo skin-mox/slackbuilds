@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in.  You must
+# make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':'.
+
+    |-----handy-ruler------------------------------------------------------|
+zvbi: zvbi (library with functions to capture and decode VBI data)
+zvbi:
+zvbi: Routines to access raw VBI capture devices (currently the V4L
+zvbi: and V4L2 API, and the *BSD bktr driver are supported), a versatile
+zvbi: VBI bit slicer, decoders for various data services and basic search,
+zvbi: render and export functions for Closed Caption and Teletext pages.
+zvbi:
+zvbi:
+zvbi:
+zvbi: zvbi home: http://zapping.sourceforge.net/ZVBI/
+zvbi:

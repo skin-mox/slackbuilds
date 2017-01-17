@@ -1,0 +1,26 @@
+diff -Nur gtk+-2.24.27.orig/docs/faq/Makefile.in gtk+-2.24.27/docs/faq/Makefile.in
+--- gtk+-2.24.27.orig/docs/faq/Makefile.in	2015-03-03 10:41:21.000000000 -0600
++++ gtk+-2.24.27/docs/faq/Makefile.in	2015-03-05 20:21:08.037167566 -0600
+@@ -644,7 +644,8 @@
+ @HAVE_DOCBOOK_TRUE@	  (cd $(srcdir); \
+ @HAVE_DOCBOOK_TRUE@	   db2html gtk-faq.sgml; \
+ @HAVE_DOCBOOK_TRUE@	   test -d html && rm -r html; \
+-@HAVE_DOCBOOK_TRUE@	   mv gtk-faq html); \
++@HAVE_DOCBOOK_TRUE@	   mkdir html; \
++@HAVE_DOCBOOK_TRUE@	   mv *.html html); \
+ @HAVE_DOCBOOK_TRUE@	fi
+ 
+ @HAVE_DOCBOOK_TRUE@pdf:
+diff -Nur gtk+-2.24.27.orig/docs/tutorial/Makefile.in gtk+-2.24.27/docs/tutorial/Makefile.in
+--- gtk+-2.24.27.orig/docs/tutorial/Makefile.in	2015-03-03 10:41:21.000000000 -0600
++++ gtk+-2.24.27/docs/tutorial/Makefile.in	2015-03-05 20:19:52.973017063 -0600
+@@ -657,7 +657,8 @@
+ @HAVE_DOCBOOK_TRUE@	  (cd $(srcdir); \
+ @HAVE_DOCBOOK_TRUE@	   db2html gtk-tut.sgml; \
+ @HAVE_DOCBOOK_TRUE@	   test -d html && rm -r html; \
+-@HAVE_DOCBOOK_TRUE@	   mv gtk-tut html; \
++@HAVE_DOCBOOK_TRUE@	   mkdir html; \
++@HAVE_DOCBOOK_TRUE@	   mv *.html html; \
+ @HAVE_DOCBOOK_TRUE@	   mkdir html/images; \
+ @HAVE_DOCBOOK_TRUE@	   cp images/*.png html/images); \
+ @HAVE_DOCBOOK_TRUE@	fi

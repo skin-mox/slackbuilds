@@ -1,0 +1,56 @@
+diff -ur wxcam-1.1.orig/wxcam.desktop wxcam-1.1/wxcam.desktop
+--- wxcam-1.1.orig/wxcam.desktop	2008-10-25 16:09:16.000000000 +0400
++++ wxcam-1.1/wxcam.desktop	2015-01-18 22:37:45.000000000 +0300
+@@ -1,10 +1,48 @@
+ [Desktop Entry]
+-Name=Webcam Application
++Name=wxCam
++GenericName=Webcam Application
++GenericName[da]=Webcam program
++GenericName[de]=Webcam Programm
++GenericName[el]=Εφαρμογή webcam
++GenericName[es]=Aplicación de webcam
++GenericName[et]=Veebikaamerarakendus
++GenericName[eu]=Webkamera aplikazioa
++GenericName[fi]=Web-kamerasovellus
++GenericName[fr]=Application webcam
++GenericName[hu]=Webkamera-alkalmazás
++GenericName[it]=Applicazione per webcam
++GenericName[nn]=Vevkamera
++GenericName[pl]=Program do kamery internetowej
++GenericName[pt]=Aplicações de câmara web
++GenericName[pt_BR]=Aplicação de WebCam
++GenericName[ro]=Aplicația webcam
++GenericName[ru]=Программа для работы с веб-камерами
++GenericName[sv]=Webb-kamera program
++GenericName[tr]=Web kamerası uygulaması
++GenericName[uk]=Програма для роботи з веб-камерами
+ Comment=wxCam webcam application
++Comment[da]=wxCam webcam program
++Comment[de]=wxCam Webcam Programm
++Comment[el]=wxCam εφαρμογή webcam
++Comment[es]=Aplicación de webcam para wxCam
++Comment[et]=wxCami veebikaamerarakendus
++Comment[eu]=wxCam webkamera aplikazioa
++Comment[fi]=wxCam-web-kamerasovellus
++Comment[fr]=wxCam application webcam
++Comment[hu]=wxCam webkamera-alkalmazás
++Comment[it]=wxCam, applicazione per webcam
++Comment[nn]=wxCam-vevkamera
++Comment[pl]=Program do kamery internetowej - wxCam
++Comment[pt]=Aplicações de câmara web wxCam
++Comment[pt_BR]=Aplicação de WebCam wxCam
++Comment[ro]=Aplicația webcam wxCam
++Comment[ru]=wxCam - программа для работы с веб-камерами
++Comment[sv]=wxCam webb-kamera program
++Comment[tr]=wxCam web kamerası uygulaması
++Comment[uk]=Програма для роботи з веб-камерами wxCam
+ Exec=wxcam
+-Icon=wxcam.png
++Icon=wxcam
+ Terminal=false
+ Type=Application
+-Encoding=UTF-8
+-Categories=GNOME;Application;AudioVideo;
++Categories=GNOME;GTK;AudioVideo;Video;Recorder;
+ StartupNotify=true

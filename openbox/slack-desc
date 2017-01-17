@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in.  You must
+# make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':'.
+
+       |-----handy-ruler------------------------------------------------------|
+openbox: openbox (a highly configurable, lighweight window manager)
+openbox:
+openbox: Openbox is a standards compliant, fast, light-weight, extensible
+openbox: window manager.  Openbox works with your applications, and makes your
+openbox: desktop easier to manage.  Openbox was written foremost to comply with
+openbox: standards and to work properly.  Openbox is fully functional as a
+openbox: stand-alone working environment, or can be used as a drop-in
+openbox: replacement for the default window manager in GNOME or KDE.
+openbox:
+openbox: openbox home: http://openbox.org/
+openbox:

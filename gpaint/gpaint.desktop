@@ -1,0 +1,11 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Name=gPaint
+Type=Application
+Exec=gpaint-2
+Icon=gpaint
+Terminal=false
+GenericName=Drawing program
+Comment=GNU Paint (gpaint) is a simple, easy-to-use paint program
+X-Desktop-File-Install-Version=0.22
+Categories=Graphics;GTK;

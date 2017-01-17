@@ -1,0 +1,3 @@
+glibc-solibs >= 2.24_multilib-x86_64-2alien
+pcre >= 8.39-x86_64-1
+zlib >= 1.2.8-x86_64-1

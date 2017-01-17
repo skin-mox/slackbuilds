@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in.  You must
+# make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+                    |-----handy-ruler------------------------------------------------------|
+simplescreenrecorder: simplescreenrecorder (record videos of programs and games)
+simplescreenrecorder:
+simplescreenrecorder: SimpleScreenRecorder can record videos of programs and games.
+simplescreenrecorder: Its GUI is Qt-based.  It records the entire screen or part of it,
+simplescreenrecorder: or records OpenGL applications directly (similar to Fraps
+simplescreenrecorder: on Windows), and synchronizes audio and video properly.
+simplescreenrecorder: Experimental live streaming capability.
+simplescreenrecorder:
+simplescreenrecorder:
+simplescreenrecorder: simplescreenrecorder home: http://www.maartenbaert.be/simplescreenrecorder/
+simplescreenrecorder:

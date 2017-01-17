@@ -1,0 +1,30 @@
+--- a/src/mpv/audio/filter/af_lavcac3enc.c
++++ b/src/mpv/audio/filter/af_lavcac3enc.c
+@@ -26,7 +26,6 @@
+ #include <assert.h>
+ 
+ #include <libavcodec/avcodec.h>
+-#include <libavutil/audioconvert.h>
+ #include <libavutil/intreadwrite.h>
+ #include <libavutil/common.h>
+ #include <libavutil/bswap.h>
+--- a/src/mpv/audio/filter/af_lavrresample.c
++++ b/src/mpv/audio/filter/af_lavrresample.c
+@@ -28,7 +28,6 @@
+ #include <assert.h>
+ 
+ #include <libavutil/opt.h>
+-#include <libavutil/audioconvert.h>
+ #include <libavutil/common.h>
+ #include <libavutil/samplefmt.h>
+ #include <libavutil/mathematics.h>
+--- a/src/mpv/audio/out/ao_lavc.c
++++ b/src/mpv/audio/out/ao_lavc.c
+@@ -25,7 +25,6 @@
+ #include <limits.h>
+ 
+ #include <libavutil/common.h>
+-#include <libavutil/audioconvert.h>
+ 
+ #include "config.h"
+ #include "options/options.h"

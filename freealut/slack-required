@@ -1,0 +1,2 @@
+glibc-solibs >= 2.24_multilib-x86_64-2alien
+openal >= 1.17.2-x86_64-2sm

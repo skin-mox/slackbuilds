@@ -1,0 +1,3 @@
+glibc-solibs >= 2.24_multilib-x86_64-2alien
+ncurses >= 5.9-x86_64-4
+readline >= 6.3-x86_64-2

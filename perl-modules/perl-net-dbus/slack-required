@@ -1,0 +1,2 @@
+dbus >= 1.10.6-x86_64-1
+glibc-solibs >= 2.22_multilib-x86_64-3alien

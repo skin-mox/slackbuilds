@@ -1,0 +1,12 @@
+gcc-g++ >= 5.4.0_multilib-x86_64-1alien
+glib2 >= 2.46.2-x86_64-4
+glibc-solibs >= 2.24_multilib-x86_64-2alien
+gssdp >= 1.0.1-x86_64-1sm
+icu4c >= 56.1-x86_64-2
+libffi >= 3.2.1-x86_64-1
+libsoup >= 2.52.2-x86_64-2
+libxml2 >= 2.9.4-x86_64-3
+sqlite >= 3.13.0-x86_64-1
+util-linux >= 2.28.2-x86_64-1
+xz >= 5.2.2-x86_64-1
+zlib >= 1.2.8-x86_64-1

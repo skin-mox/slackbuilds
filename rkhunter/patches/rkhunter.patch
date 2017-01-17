@@ -1,0 +1,46 @@
+--- rkhunter	2014-03-12 17:54:55.000000000 -0300
++++ rkhunter.new	2015-10-02 17:01:25.040000000 -0300
+@@ -7797,6 +7797,19 @@
+ 	#
+ 
+ 
++	# XOR.DDoS
++	XORDDOS_FILES="/lib/udev/udev
++		       /lib/udev/debug
++		       /etc/cron.hourly/cron.sh
++		       /etc/cron.hourly/udev.sh
++		       /lib/libgcc4.so
++		       /var/run/udev.pid
++		       /var/run/sftp.pid"
++	XORDDOS_DIRS=
++	XORDDOS_KSYMS=
++
++
++
+ 	# 55808 Variant A
+ 	W55808A_FILES="/tmp/.../r
+ 		       /tmp/.../a"
+@@ -11907,6 +11920,13 @@
+ 		return
+ 	fi
+ 
++	# XOR.DDoS Rootkit
++	SCAN_ROOTKIT="XOR.DDoS - Rootkit"
++	SCAN_FILES=${XORDDOS_FILES}
++	SCAN_DIRS=${XORDDOS_DIRS}
++	SCAN_KSYMS=${XORDDOS_KSYMS}
++	scanrootkit
++
+ 
+ 	# 55808 Trojan - Variant A
+ 
+--- backdoorports.dat	2010-11-13 20:41:19.000000000 -0300
++++ backdoorports.dat.new	2015-10-02 17:10:24.086000000 -0300
+@@ -12,6 +12,7 @@
+ 2001:Scalper:UDP:
+ 2006:CB Rootkit or w00tkit Rootkit SSH server:TCP:
+ 2128:MRK:TCP:
++3502:Possible XOR.DDoS Botnet Malware:TCP:
+ 6666:Possible rogue IRC bot:TCP:
+ 6667:Possible rogue IRC bot:TCP:
+ 6668:Possible rogue IRC bot:TCP:

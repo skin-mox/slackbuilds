@@ -1,0 +1,162 @@
+#!/bin/sh
+# Heavily based on the Slackware 14.2 SlackBuild
+#
+# Created by: Skin Mox <skin-mox@bol.com.br>
+#
+#
+# 
+# 
+#  
+#  
+#
+# Redistribution and use of this script, with or without modification, is
+# permitted provided that the following conditions are met:
+#
+# 1. Redistributions of this script must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+#
+# THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR IMPLIED
+# WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+# EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+# OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+# ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# 
+#
+#
+# Official Site: https://code.google.com/archive/p/reaver-wps/
+#
+
+# Set variables:
+CWD=`pwd`
+OUTPUT=${OUTPUT:-$CWD}
+PKGNAME=reaver
+TMP=${TMP:-/tmp/txz/$PKGNAME}
+PKG=$TMP/package
+VERSION=${VERSION:-1.5.2}
+ARCH=${ARCH:-$(uname -m)}
+JOBS=${JOBS:--j5}
+BUILD=${BUILD:-1}
+TAG=${TAG:-sm}
+
+SRCURL="https://github.com/gabrielrcouto/reaver-wps.git"
+SOURCE="$PKGNAME-$VERSION.tar.xz"
+
+# Download git
+if [ ! -e $CWD/$SOURCE ]; then
+    git clone ${SRCURL} || exit 1
+    mv $PKGNAME-wps $PKGNAME-$VERSION || exit 1
+    tar -cvJf $PKGNAME-$VERSION.tar.xz $PKGNAME-$VERSION || exit 1
+    rm -rf $PKGNAME-$VERSION
+fi
+
+# Set compiling FLAGS
+if [ "$ARCH" = "i486" ]; then
+  SLKCFLAGS="-O2 -march=i486 -mtune=i686"; 
+  SLKLDFLAGS=""; 
+  LIBDIRSUFFIX=""; 
+  CHOST="i486"
+elif [ "$ARCH" = "i686" ]; then
+  SLKCFLAGS="-O2 -march=i686 -mtune=i686"; 
+  SLKLDFLAGS=""; 
+  LIBDIRSUFFIX=""; 
+  CHOST="i686"
+elif [ "$ARCH" = "x86_64" ]; then
+  SLKCFLAGS="-O2 -fPIC"; 
+  SLKLDFLAGS="-L/usr/lib64"; 
+  LIBDIRSUFFIX="64"; 
+  CHOST="x86_64"
+fi
+
+# sqlite3 requires -ldl in order to build against it
+SLKCFLAGS="$SLKCFLAGS -ldl"
+
+# Create building directory
+rm -rf $PKG
+mkdir -p $TMP $PKG $OUTPUT 
+
+# Decompress the source tarball
+cd $TMP
+tar xvf $CWD/$SOURCE || exit 1
+cd $PKGNAME-$VERSION || exit 1
+
+echo -e "\E[0;32m#####                              \E[0;0m"
+echo -e "\E[0;32m+++++ Start SlackBuild $PKGNAME    \E[0;0m"
+echo -e "\E[0;32m#####                              \E[0;0m"
+
+cd src || exit 1
+
+# Building  package
+CFLAGS="$SLKCFLAGS" \
+CXXFLAGS="$SLKCFLAGS" \
+     ./configure \
+       --build=$CHOST-slackware-linux || exit 1
+
+make $JOBS || exit 1
+
+# make install is b0rked
+install -Dm 0755 wash $PKG/usr/sbin/wash || exit 1
+install -Dm 0755 reaver $PKG/usr/sbin/reaver || exit 1
+# not really sure how to handle future reaver.db updates
+install -Dm 0644 reaver.db $PKG/etc/reaver/reaver.db.new || exit 1
+install -Dm 0644 ../docs/reaver.1.gz $PKG/usr/man/man1/reaver.1.gz || exit 1
+
+# exit 1 Strip binaries and shared objects, if present
+( cd $PKG
+  find . | xargs file | grep "executable" | grep ELF | cut -f 1 -d : | xargs -r strip --strip-unneeded 2> /dev/null || true
+  find . | xargs file | grep "shared object" | grep ELF | cut -f 1 -d : | xargs -r strip --strip-unneeded 2> /dev/null || true
+  find . | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs -r strip --strip-unneeded 2> /dev/null || true
+)
+
+# Also add the slack-desk file to the package
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+cat $CWD/doinst.sh > $PKG/install/doinst.sh || exit 1
+
+# Add documentation files: readme, changelog and so on
+if [ ! -e $PKG/usr/doc/$PKGNAME-$VERSION ]; then
+   mkdir -p $PKG/usr/doc/$PKGNAME-$VERSION || exit 1
+fi
+cp -a ABOUT-NLS AUTHORS COPYING ChangeLog INSTALL NEWS README TODO $PKG/usr/doc/$PKGNAME-$VERSION
+
+# Also add the slackbuild files to the package
+mkdir -p $PKG/usr/doc/$PKGNAME-$VERSION/SlackBuild
+cat $CWD/slack-desc > $PKG/usr/doc/$PKGNAME-$VERSION/SlackBuild/slack-desc
+cat $CWD/$PKGNAME.SlackBuild > $PKG/usr/doc/$PKGNAME-$VERSION/SlackBuild/$PKGNAME.SlackBuild
+if [ -x $CWD/patches ];then
+   mkdir -p $PKG/usr/doc/$PKGNAME-$VERSION/SlackBuild/patches
+   cp $CWD/patches/*  $PKG/usr/doc/$PKGNAME-$VERSION/SlackBuild/patches
+   chmod 644 $PKG/usr/doc/$PKGNAME-$VERSION/SlackBuild/patches/*
+fi
+
+# Find and print dependencies into slack-required file
+cd $PKG
+if [ -x /usr/bin/requiredbuilder ];then
+   requiredbuilder -y -v -b -s  $CWD $PKG
+fi
+
+# Create txz package
+ROOTCOMMANDS="set -o errexit -o xtrace ; cd ${PKG} ;
+  /bin/chown --recursive root:root .  ;"
+ROOTCOMMANDS="${ROOTCOMMANDS}
+  /sbin/makepkg --linkadd y --chown n $OUTPUT/$PKGNAME-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz} " || exit 1
+if test ${UID} = 0; then
+  eval ${ROOTCOMMANDS}
+  set +o xtrace
+elif test "$(type -t fakeroot)" = 'file'; then
+  echo -e "\e[1mEntering fakeroot environment.\e[0m"
+  echo ${ROOTCOMMANDS} | fakeroot
+else
+  echo -e "\e[1mPlease enter your root password.\e[0m (Consider installing fakeroot.)"
+  /bin/su -c "${ROOTCOMMANDS}"
+fi
+
+# Cleanup if enabled
+if [ "$1" = "--cleanup" ]; then
+ rm -rf $TMP
+fi
+

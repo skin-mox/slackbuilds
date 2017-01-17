@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in.  You must
+# make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':'.
+
+        |-----handy-ruler------------------------------------------------------|
+audacity: audacity (sound editor)
+audacity:
+audacity: Audacity manipulates digital audio waveforms. In addition to letting
+audacity: you record sounds directly from within the program, it imports many
+audacity: sound file formats. It supports all common editing operations such as
+audacity: Cut, Copy, and Paste, plus it will mix tracks and let you apply
+audacity: plug-in effects to any part of a sound. It also has a built-in
+audacity: amplitude envelope editor, spectrogram mode and a frequency analysis
+audacity: window for audio analysis applications.
+audacity:
+audacity: audacity home: http://audacity.sourceforge.net/

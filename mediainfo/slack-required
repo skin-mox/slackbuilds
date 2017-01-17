@@ -1,0 +1,5 @@
+gcc-g++ >= 5.4.0_multilib-x86_64-1alien
+glibc-solibs >= 2.24_multilib-x86_64-2alien
+libmediainfo >= 0.7.91-x86_64-1sm
+libzen >= 0.4.34-x86_64-1sm
+zlib >= 1.2.8-x86_64-1

@@ -1,0 +1,15 @@
+diff -ur wxcam-1.1.orig/src/setting.cpp wxcam-1.1/src/setting.cpp
+--- wxcam-1.1.orig/src/setting.cpp	2011-06-11 11:49:43.000000000 +0400
++++ wxcam-1.1/src/setting.cpp	2015-01-18 17:12:29.000000000 +0300
+@@ -485,9 +485,9 @@
+     cfile->writeValueReplace( "AudioDevice:", "/dev/dsp" );
+     cfile->writeValueReplace( "DriverAPI:", "AUTO" );
+     cfile->writeValueReplace( "Format:", "AUTO" );
+-    s = wxFileName::GetHomeDir() + wxString("/Desktop/image.tif", wxConvUTF8);
++    s = wxFileName::GetHomeDir() + wxString("/image.tif", wxConvUTF8);
+     cfile->writeValueReplace( "Snapshot:", (const char*)s.mb_str(wxConvUTF8) );
+-    s = wxFileName::GetHomeDir() + wxString("/Desktop/video.avi", wxConvUTF8);
++    s = wxFileName::GetHomeDir() + wxString("/video.avi", wxConvUTF8);
+     cfile->writeValueReplace( "Video:", (const char*)s.mb_str(wxConvUTF8) );
+     cfile->writeValueReplace( "Resolution:", "160x120" );
+     cfile->writeValueReplace( "Frame_Rate:", "15" );

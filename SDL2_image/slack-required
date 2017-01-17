@@ -1,0 +1,2 @@
+SDL2 >= 2.0.4-x86_64-1gl
+glibc-solibs >= 2.22_multilib-x86_64-3alien

@@ -1,0 +1,396 @@
+#!/bin/sh
+# Heavily based on the Slackware 14.2 SlackBuild
+#
+# Created by: Eric  Hameleers, Eindhoven, NL
+# and:        Larry Hajali <larryhaja[at]gmail[dot]com>
+#
+# 
+# 
+# Modified by: Skin Mox <skin-mox@bol.com.br>
+#  
+#
+# Redistribution and use of this script, with or without modification, is
+# permitted provided that the following conditions are met:
+#
+# 1. Redistributions of this script must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+#
+# THIS SOFTWARE IS PROVIDED BY THE AUTHOR ''AS IS'' AND ANY EXPRESS OR IMPLIED
+# WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+# EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+# OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+# ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# 
+#
+#
+# Official Site: http://www.qt.io/qt5-4/
+#
+
+# Set variables:
+CWD=`pwd`
+OUTPUT=${OUTPUT:-$CWD}
+PKGNAME=qt5
+VERSION=${VERSION:-5.7.1}
+PKGSRC=$(echo $VERSION |cut -d- -f1)
+TMP=${TMP:-/tmp/txz/$PKGNAME}
+PKG=$TMP/package
+PKGVER=$(echo $VERSION |tr - _)
+MAJORVERSION=$(printf $VERSION | cut -c1-3)
+ARCH=${ARCH:-$(uname -m)}
+JOBS=${JOBS:--j3}
+BUILD=${BUILD:-1}
+TAG=${TAG:-sm}
+
+SOURCE="http://download.qt.io/official_releases/qt/${MAJORVERSION}/${VERSION}/single/qt-everywhere-opensource-src-${VERSION}.tar.xz"
+
+TAR=${TAR:-$(basename $SOURCE)}
+DIR=${DIR:-$(echo "$TAR"|sed -r 's/(\.tar|)(.gz|.bz2|.xz|.tgz|)$//')}
+
+# Download source tarball if still not present
+if [ ! -e $CWD/$TAR ]; then
+   wget -c $SOURCE -O "$CWD/$TAR" || exit 1
+fi
+
+# Automatically determine the architecture we're building on:
+if [ -z "$ARCH" ]; then
+  case "$(uname -m)" in
+    i?86) ARCH=i486 ;;
+    arm*) readelf /usr/bin/file -A | egrep -q "Tag_CPU.*[4,5]" && ARCH=arm || ARCH=armv7hl ;;
+    # Unless $ARCH is already set, use uname -m for all other archs:
+    *) ARCH=$(uname -m) ;;
+  esac
+  export ARCH
+fi
+
+# Set compiling FLAGS
+if [ "$ARCH" = "i486" ]; then
+  SLKCFLAGS="-O2 -march=i486 -mtune=i686"; 
+  SLKLDFLAGS=""; 
+  LIBDIRSUFFIX=""; 
+  CHOST="i486"
+elif [ "$ARCH" = "i686" ]; then
+  SLKCFLAGS="-O2 -march=i686 -mtune=i686"; 
+  SLKLDFLAGS=""; 
+  LIBDIRSUFFIX=""; 
+  CHOST="i686"
+elif [ "$ARCH" = "x86_64" ]; then
+  SLKCFLAGS="-O2 -fPIC"; 
+  SLKLDFLAGS="-L/usr/lib64"; 
+  LIBDIRSUFFIX="64"; 
+  CHOST="x86_64"
+elif [ "$ARCH" = "armv7hl" ]; then
+  # To prevent "qatomic_armv6.h error: output number 2 not directly addressable"
+  # More permanent solution is to patch gcc:
+  # http://bazaar.launchpad.net/~linaro-toolchain-dev/gcc-linaro/4.6/revision/106731
+  SLKCFLAGS="-O2 -march=armv7-a -mfpu=vfpv3-d16 -fno-strict-volatile-bitfields"
+  SLKLDFLAGS=""
+  LIBDIRSUFFIX=""
+else
+  SLKCFLAGS="-O2"
+  SLKLDFLAGS=""
+  LIBDIRSUFFIX=""
+fi
+
+case "$ARCH" in
+    arm*) TARGET=$ARCH-slackware-linux-gnueabi ;;
+    *)    TARGET=$ARCH-slackware-linux ;;
+esac
+
+# Create building directory and decompress the source tarball
+rm -rf $PKG
+mkdir -p $TMP $PKG $OUTPUT 
+cd $TMP
+rm -rf qt-everywhere-opensource-src-$VERSION
+echo "Extracting qt-everywhere-opensource-src-$VERSION.tar.xz"
+tar xf $CWD/qt-everywhere-opensource-src-$VERSION.tar.xz || exit 1
+cd qt-everywhere-opensource-src-$PKGSRC || exit 1
+
+# Fix dangling symlinks, thanks Larry Hajali:
+rm -f qtwebengine/src/3rdparty/chromium/third_party/mesa/src/src/gallium/state_trackers/d3d1x/w32api
+rm -f qtwebengine/src/3rdparty/chromium/third_party/webrtc/tools/e2e_quality/audio/perf
+ln -s ../../../../../tools/perf \
+  qtwebengine/src/3rdparty/chromium/third_party/webrtc/tools/e2e_quality/audio/
+
+# Use -reduce-relocations only on i?86 and x86_64 architextures.
+# https://bugreports.qt-project.org/browse/QTBUG-36129
+if echo $ARCH | grep -q '\(i.86\|x86_64\)' 2>/dev/null; then
+  RELOCATIONS="-reduce-relocations"
+else
+  RELOCATIONS=""
+fi
+
+echo -e "\E[0;32m#####                              \E[0;0m"
+echo -e "\E[0;32m+++++ Prepare Compilation          \E[0;0m"
+echo -e "\E[0;32m#####                              \E[0;0m"
+
+# Slackware patch to build against MySQL/MariaDB.
+patch -p1 < $CWD/patches/qt5.mysql.h.diff --verbose || exit 1
+
+# Arch Linux patches
+
+# Don't unload plugins in QPluginLoader https://bugreports.qt.io/browse/QTBUG-49061
+cd qtbase
+  patch -p1 < $CWD/patches/qtbug-49061.patch --verbose || exit 1
+cd -
+# Fix file chooser segfault on gnome/wayland https://bugreports.qt.io/browse/QTBUG-55583
+cd qtbase
+  patch -p1 < $CWD/patches/qtbug-55583.patch --verbose || exit 1
+cd -
+
+###############################
+# Fix openssl v1.1
+#cd qtbase
+#  patch -p1 < $CWD/patches/qtbase-5.7.0-openssl-1.1.patch --verbose || exit 1
+#cd -
+###############################
+
+
+if ! pkg-config --exists libpulse 2>/dev/null ; then
+  # Forcibly disable pulseaudio in qtwebengine:
+  cat $CWD/patches/qt5.pulseaudio.diff | patch -p1 --verbose || exit 1
+  # Disable pulseaudio in Qt5:
+  PACONF="-no-pulseaudio"
+else
+  PACONF=" "
+fi
+
+sed -i -e "s/-O2/$SLKCFLAGS/" qtbase/mkspecs/common/g++-base.conf || exit 1
+sed -i -e "s/-O2/$SLKCFLAGS/" qtbase/mkspecs/common/gcc-base.conf || exit 1
+sed -i -e "/^QMAKE_LFLAGS\s/s,+=,+= $SLKLDFLAGS,g" qtbase/mkspecs/common/gcc-base.conf || exit 1
+
+# Enable h.264 codec support:
+echo "WEBENGINE_CONFIG += use_proprietary_codecs" >> qtwebengine/.qmake.conf
+
+echo -e "\E[0;32m#####                              \E[0;0m"
+echo -e "\E[0;32m+++++ Start SlackBuild $PKGNAME    \E[0;0m"
+echo -e "\E[0;32m#####                              \E[0;0m"
+
+# Building  package
+export CFLAGS="$SLKCFLAGS"
+export CXXFLAGS="$SLKCFLAGS"
+export OPENSOURCE_CXXFLAGS="$SLKCFLAGS"
+export QTDIR="${TMP}/qt-everywhere-opensource-src-${PKGSRC}"
+export LD_LIBRARY_PATH="${QTDIR}/qtbase/lib:${QTDIR}/qttools/lib:${LD_LIBRARY_PATH}"
+export QT_PLUGIN_PATH="${QTDIR}/qtbase/plugins"
+./configure \
+  -confirm-license \
+  -opensource \
+  -prefix /usr \
+  -libdir /usr/lib${LIBDIRSUFFIX} \
+  -bindir /usr/lib${LIBDIRSUFFIX}/qt5/bin \
+  -sysconfdir /etc/xdg \
+  -headerdir /usr/include/qt5 \
+  -datadir /usr/share/qt5 \
+  -archdatadir /usr/lib${LIBDIRSUFFIX}/qt5 \
+  -docdir /usr/doc/qt5-$PKGVER \
+  -examplesdir /usr/doc/qt5-$PKGVER/examples \
+  -system-libpng \
+  -system-libjpeg \
+  -system-pcre \
+  -system-sqlite \
+  -system-zlib \
+  -plugin-sql-mysql \
+  -plugin-sql-sqlite \
+  -accessibility \
+  -alsa \
+  -dbus \
+  -glib \
+  -icu \
+  -opengl \
+  -openssl \
+  -optimized-qmake \
+  -qpa xcb \
+  -qt-harfbuzz \
+  -verbose \
+  -xcb \
+  -nomake examples \
+  -nomake tests \
+  -no-separate-debug-info \
+  -no-strip \
+  -no-use-gold-linker \
+  ${PACONF} \
+  ${RELOCATIONS} \
+  -no-pch \
+  || exit 1
+  # No-precompiled-headers is ccache-friendly.
+  #  
+   
+# Sometimes a failure happens when parallelizing make.  Try again if make fails,
+# but make a failure the second time around (single threaded) a fatal error:
+make $JOBS || make 2>&1 | tee $CWD/build.log || exit 1
+make install INSTALL_ROOT=$PKG || exit 
+
+# Strip binaries and shared objects, if present
+( cd $PKG
+  find . | xargs file | grep "executable" | grep ELF | cut -f 1 -d : | xargs -r strip --strip-unneeded 2> /dev/null || true
+  find . | xargs file | grep "shared object" | grep ELF | cut -f 1 -d : | xargs -r strip --strip-unneeded 2> /dev/null || true
+  find . | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs -r strip --strip-unneeded 2> /dev/null || true
+)
+
+# Fix the path in prl files:
+find "$PKG/usr/lib${LIBDIRSUFFIX}" -type f -name '*.prl' \
+  -exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d;s/\(QMAKE_PRL_LIBS =\).*/\1/' {} \;  || exit 1
+
+# Fix the qmake path in pri file:
+sed -i "s,${QTDIR}/qtbase,/usr/lib${LIBDIRSUFFIX}/qt5," \
+  $PKG/usr/lib${LIBDIRSUFFIX}/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri || exit 1
+# Install symlinks to the Qt5 binaries in the $PATH:
+mkdir -p $PKG/usr/bin
+for FILE in $PKG/usr/lib${LIBDIRSUFFIX}/qt5/bin/* ; do
+  ln -s ../lib${LIBDIRSUFFIX}/qt5/bin/$(basename $FILE) $PKG/usr/bin/$(basename $FILE)-qt5
+done
+
+# Set the QT5DIR variable in the environment:
+mkdir -p $PKG/etc/profile.d
+sed -e "s,@LIBDIRSUFFIX@,${LIBDIRSUFFIX},g" $CWD/profile.d/$PKGNAME.sh \
+  > $PKG/etc/profile.d/$PKGNAME.sh || exit 1
+sed -e "s,@LIBDIRSUFFIX@,${LIBDIRSUFFIX},g" $CWD/profile.d/$PKGNAME.csh \
+  > $PKG/etc/profile.d/$PKGNAME.csh || exit 1
+chmod 0755 $PKG/etc/profile.d/*
+
+# Add menu entries for all those hidden but great Qt applications:
+# Qt5 logo:
+mkdir -p $PKG/usr/share/icons/hicolor/48x48/apps
+convert qtdoc/doc/src/images/qt-logo.png  -resize 48x48 $PKG/usr/share/icons/hicolor/48x48/apps/qt5-logo.png
+# Assistant icons
+install -p -m644 -D qttools/src/assistant/assistant/images/assistant.png $PKG/usr/share/icons/hicolor/32x32/apps/qt5-assistant.png
+install -p -m644 -D qttools/src/assistant/assistant/images/assistant-128.png $PKG/usr/share/icons/hicolor/128x128/apps/qt5-assistant.png
+# Designer icon
+install -p -m644 -D qttools/src/designer/src/designer/images/designer.png $PKG/usr/share/icons/hicolor/128x128/apps/qt5-designer.png
+# QDbusViewer icons
+install -p -m644 qttools/src/qdbus/qdbusviewer/images/qdbusviewer.png $PKG/usr/share/icons/hicolor/32x32/apps/qt5-qdbusviewer.png
+install -p -m644 qttools/src/qdbus/qdbusviewer/images/qdbusviewer-128.png $PKG/usr/share/icons/hicolor/128x128/apps/qt5-qdbusviewer.png
+# Linguist icons
+for icon in qttools/src/linguist/linguist/images/icons/linguist-*-32.png ; do
+  size=$(echo $(basename ${icon}) | cut -d- -f2)
+  install -p -m644 -D ${icon} $PKG/usr/share/icons/hicolor/${size}x${size}/apps/qt5-linguist.png
+done
+
+# And the .desktop files too:
+mkdir -p $PKG/usr/share/applications
+cat <<EOF > $PKG/usr/share/applications/qt5-designer.desktop
+[Desktop Entry]
+Name=Qt5 Designer
+GenericName=Interface Designer
+Comment=Design GUIs for Qt5 applications
+Exec=designer-qt5 -qt=5
+Icon=qt5-designer
+MimeType=application/x-designer;
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Development;
+EOF
+cat <<EOF > $PKG/usr/share/applications/qt5-assistant.desktop
+[Desktop Entry]
+Name=Qt5 Assistant 
+Comment=Shows Qt5 documentation and examples
+Exec=assistant-qt5 -qt=5
+Icon=qt5-assistant
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Development;Documentation;
+EOF
+cat <<EOF > $PKG/usr/share/applications/qt5-linguist.desktop
+[Desktop Entry]
+Name=Qt5 Linguist 
+Comment=Add translations to Qt5 applications
+Exec=linguist-qt5 -qt=5
+Icon=qt5-linguist
+MimeType=text/vnd.trolltech.linguist;application/x-linguist;
+Terminal=false
+Encoding=UTF-8
+Type=Application
+Categories=Qt;Development;
+EOF
+cat <<EOF > $PKG/usr/share/applications/qt5-qdbusviewer.desktop
+[Desktop Entry]
+Name=Qt5 QDbusViewer 
+GenericName=Qt5 D-Bus Debugger
+Comment=Debug D-Bus applications
+Exec=qdbusviewer-qt5
+Icon=qt5-qdbusviewer
+Terminal=false
+Type=Application
+Categories=Qt;Development;Debugger;
+EOF
+
+# Add a documentation directory:
+mkdir -p $PKG/usr/doc/$PKGNAME-$PKGVER
+cp -a \
+  README qtbase/{header*,LGPL_EXCEPTION.txt,LICENSE*} \
+  $PKG/usr/doc/$PKGNAME-$PKGVER
+if [ -d $PKG/usr/lib${LIBDIRSUFFIX}/qt5/doc/html ]; then
+  ( cd $PKG/usr/doc/$PKGNAME-$PKGVER
+    ln -sf /usr/lib${LIBDIRSUFFIX}/qt5/doc/html .
+  )
+fi
+
+# Also add the slack-desk file to the package
+mkdir -p $PKG/install
+cat $CWD/slack-desc > $PKG/install/slack-desc
+
+# Also add the slackbuild files to the package
+mkdir -p $PKG/usr/doc/$PKGNAME-$VERSION/SlackBuild
+cat $CWD/slack-desc > $PKG/usr/doc/$PKGNAME-$VERSION/SlackBuild/slack-desc
+cat $CWD/$PKGNAME.SlackBuild > $PKG/usr/doc/$PKGNAME-$VERSION/SlackBuild/$PKGNAME.SlackBuild
+if [ -x $CWD/patches ];then
+   mkdir -p $PKG/usr/doc/$PKGNAME-$VERSION/SlackBuild/patches
+   cp $CWD/patches/*  $PKG/usr/doc/$PKGNAME-$VERSION/SlackBuild/patches
+   chmod 644 $PKG/usr/doc/$PKGNAME-$VERSION/SlackBuild/patches/*
+fi
+
+# Building some post-install execution script 	
+	echo "if [ -x /usr/bin/update-desktop-database ]; then
+  /usr/bin/update-desktop-database &> /dev/null
+fi" >> $PKG/install/doinst.sh
+	echo "" >> $PKG/install/doinst.sh
+	echo "if [ -x /usr/bin/gtk-update-icon-cache ]; then
+  /usr/bin/gtk-update-icon-cache  -f -q /usr/share/icons/hicolor &> /dev/null
+fi" >> $PKG/install/doinst.sh
+	echo "" >> $PKG/install/doinst.sh
+
+# Add a documentation directory:
+mkdir -p $PKG/usr/doc/$PKGNAM-$PKGVER
+cp -a \
+  README qtbase/{header*,LGPL_EXCEPTION.txt,LICENSE*} \
+  $PKG/usr/doc/$PKGNAM-$PKGVER
+if [ -d $PKG/usr/lib${LIBDIRSUFFIX}/qt5/doc/html ]; then
+  ( cd $PKG/usr/doc/$PKGNAM-$PKGVER
+    ln -sf /usr/lib${LIBDIRSUFFIX}/qt5/doc/html .
+  )
+fi
+
+# Find and print dependencies into slack-required file
+cd $PKG
+if [ -x /usr/bin/requiredbuilder ];then
+   requiredbuilder -y -v -b -s  $CWD $PKG
+fi
+
+# Create txz package
+ROOTCOMMANDS="set -o errexit -o xtrace ; cd ${PKG} ;
+  /bin/chown --recursive root:root .  ;"
+ROOTCOMMANDS="${ROOTCOMMANDS}
+  /sbin/makepkg --linkadd y --chown n $OUTPUT/$PKGNAME-$VERSION-$ARCH-$BUILD$TAG.${PKGTYPE:-txz} " || exit 1
+if test ${UID} = 0; then
+  eval ${ROOTCOMMANDS}
+  set +o xtrace
+elif test "$(type -t fakeroot)" = 'file'; then
+  echo -e "\e[1mEntering fakeroot environment.\e[0m"
+  echo ${ROOTCOMMANDS} | fakeroot
+else
+  echo -e "\e[1mPlease enter your root password.\e[0m (Consider installing fakeroot.)"
+  /bin/su -c "${ROOTCOMMANDS}"
+fi
+
+# Cleanup if enabled
+if [ "$1" = "--cleanup" ]; then
+ rm -rf $TMP
+fi
+

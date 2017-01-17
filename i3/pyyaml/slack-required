@@ -1,0 +1,3 @@
+glibc-solibs >= 2.24_multilib-x86_64-2alien
+libyaml >= 0.1.6-x86_64-1
+python >= 2.7.13-x86_64-1

@@ -1,0 +1,14 @@
+From: Unknown
+Subject: Debian local changes (add deskptop file)
+
+--- /dev/null
++++ b/ltris.desktop
+@@ -0,0 +1,8 @@
++[Desktop Entry]
++Name=LTris
++Comment=A tetris clone with nice graphics.
++Exec=ltris
++Icon=ltris48.xpm
++Type=Application
++Categories=Game;
++Keywords=bricks;tetris;

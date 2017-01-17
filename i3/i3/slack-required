@@ -1,0 +1,6 @@
+dmenu >= 4.6-x86_64-1sm
+libev >= 4.24-x86_64-1sm
+libxkbcommon >= 0.7.0-x86_64-1sm
+xcb-util-xrm >= 1.0-x86_64-1sm
+yajl >= 2.1.0-x86_64-1sm
+

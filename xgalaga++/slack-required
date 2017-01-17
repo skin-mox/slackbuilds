@@ -1,0 +1,8 @@
+gcc >= 5.4.0_multilib-x86_64-1alien
+gcc-g++ >= 5.4.0_multilib-x86_64-1alien
+glibc-solibs >= 2.24_multilib-x86_64-2alien
+libX11 >= 1.6.4-x86_64-1
+libXau >= 1.0.8-x86_64-2
+libXdmcp >= 1.1.2-x86_64-2
+libXpm >= 3.5.11-x86_64-2
+libxcb >= 1.11.1-x86_64-1

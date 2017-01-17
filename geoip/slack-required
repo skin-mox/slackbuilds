@@ -1,0 +1,2 @@
+glibc-solibs >= 2.24_multilib-x86_64-2alien
+zlib >= 1.2.8-x86_64-1

@@ -1,0 +1,31 @@
+--- HandBrake-0.10.2/make/include/main.defs.orig	2014-10-16 01:32:41.000000000 +0200
++++ HandBrake-0.10.2/make/include/main.defs	2015-09-30 23:58:24.922204944 +0200
+@@ -41,16 +41,11 @@
+ 
+ ifneq (,$(filter $(BUILD.system),darwin cygwin mingw))
+     MODULES += contrib/fontconfig
+-    MODULES += contrib/freetype
+-    MODULES += contrib/fribidi
+     MODULES += contrib/libxml2
+-    MODULES += contrib/libass
+     MODULES += contrib/libogg
+     MODULES += contrib/libvorbis
+     MODULES += contrib/libtheora
+     MODULES += contrib/libsamplerate
+-    MODULES += contrib/lame
+-    MODULES += contrib/x264
+ endif
+ 
+ ifeq (1,$(FEATURE.fdk_aac))
+@@ -61,6 +56,11 @@
+     MODULES += contrib/x265
+ endif
+ 
++MODULES += contrib/freetype
++MODULES += contrib/fribidi
++MODULES += contrib/libass
++MODULES += contrib/lame
++MODULES += contrib/x264
+ MODULES += contrib/ffmpeg
+ MODULES += contrib/libvpx
+ MODULES += contrib/libdvdread

@@ -1,0 +1,24 @@
+From: Simon McVittie <smcv@debian.org>
+Date: Fri, 24 Feb 2012 09:37:31 +0000
+Subject: Let servers set sv_fps, too
+
+---
+ code/client/cl_parse.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/code/client/cl_parse.c b/code/client/cl_parse.c
+index 5c9c147..9c7991c 100644
+--- a/code/client/cl_parse.c
++++ b/code/client/cl_parse.c
+@@ -414,9 +414,9 @@ void CL_SystemInfoChanged( void ) {
+ 			// If this cvar may not be modified by a server discard the value.
+ 			if(!(cvar_flags & (CVAR_SYSTEMINFO | CVAR_SERVER_CREATED | CVAR_USER_CREATED)))
+ 			{
+-#ifndef STANDALONE
++#if !defined(STANDALONE) || defined(WITH_OPENARENA)
+ 				if(Q_stricmp(key, "g_synchronousClients") && Q_stricmp(key, "pmove_fixed") &&
+-				   Q_stricmp(key, "pmove_msec"))
++				   Q_stricmp(key, "pmove_msec") && Q_stricmp(key, "sv_fps"))
+ #endif
+ 				{
+ 					Com_Printf(S_COLOR_YELLOW "WARNING: server is not allowed to set %s=%s\n", key, value);

@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+          |-----handy-ruler------------------------------------------------------|
+keepassx2: keepassx (personal data management application)
+keepassx2:
+keepassx2: keepassx is an application for people with extremly high demands on
+keepassx2: secure personal data management
+keepassx2: keepassx saves many different information e.g. user names, passwords,
+keepassx2: urls, attachmets and comments in one single database. For a better
+keepassx2: management user-defined titles and icons can be specified for each
+keepassx2: single entry. Furthermore the entries are sorted in groups, which are
+keepassx2: customizable as well. The integrated search function allows to search
+keepassx2: in a single group or the complete database. keepassx offers a little
+keepassx2: utility for secure password generation.

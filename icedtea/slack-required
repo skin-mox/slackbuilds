@@ -1,0 +1,6 @@
+gcc >= 5.4.0_multilib-x86_64-1alien
+gcc-g++ >= 5.4.0_multilib-x86_64-1alien
+glib2 >= 2.46.2-x86_64-4
+glibc-solibs >= 2.24_multilib-x86_64-2alien
+mozilla-nss >= 3.23-x86_64-1
+zlib >= 1.2.8-x86_64-1

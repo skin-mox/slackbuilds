@@ -1,0 +1,5 @@
+boost >= 1.63.0-x86_64-1
+gcc >= 5.4.0-x86_64-1
+gcc-g++ >= 5.4.0-x86_64-1
+glibc-solibs >= 2.24-x86_64-2
+openssl >= 1.0.2j-x86_64-1 | openssl-solibs >= 1.0.2j-x86_64-1

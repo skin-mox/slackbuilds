@@ -1,0 +1,4 @@
+gcc >= 5.4.0_multilib-x86_64-1alien
+gcc-g++ >= 5.4.0_multilib-x86_64-1alien
+glibc-solibs >= 2.24_multilib-x86_64-2alien
+python3

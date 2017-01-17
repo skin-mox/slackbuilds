@@ -1,0 +1,5 @@
+alsa-lib >= 1.1.1-x86_64-2
+db48 >= 4.8.30-x86_64-2
+gcc-g++ >= 5.4.0_multilib-x86_64-1alien
+glibc-solibs >= 2.24_multilib-x86_64-2alien
+jack >= 0.124.1-x86_64-1gl

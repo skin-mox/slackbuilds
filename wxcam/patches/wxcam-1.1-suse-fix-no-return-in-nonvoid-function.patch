@@ -1,0 +1,20 @@
+--- wxcam-1.1/src/device.cpp.bak	2012-03-07 20:59:19.774820103 +0100
++++ wxcam-1.1/src/device.cpp	2012-03-07 21:10:10.196003098 +0100
+@@ -577,6 +577,7 @@ bool Device::getResolutionList(wxArraySt
+             resw = resh * 16 / (float)9;
+         }
+     }
++return true;
+ }
+ 
+ bool Device::getGain( int *agc ) /* VIDIOCPWCGAGC*/ 
+--- wxcam-1.1/src/audio.cpp.bak	2012-03-07 20:59:06.161858133 +0100
++++ wxcam-1.1/src/audio.cpp	2012-03-07 21:04:34.971939575 +0100
+@@ -140,6 +140,7 @@ void* Audio::Entry()
+     snd_pcm_drain(handle);
+     snd_pcm_close(handle);
+     free(buffer);
++    return 0;
+ }
+ 
+ std::vector<std::string> Audio::getAudioFrames()

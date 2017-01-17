@@ -1,0 +1,44 @@
+--- src/chart.c.orig	2011-03-02 11:10:19.000000000 +0100
++++ src/chart.c	2011-10-31 12:00:50.608000463 +0100
+@@ -189,14 +189,10 @@
+ 	if ( charts ) list_delete( charts ); charts = 0;
+ 	charts = list_create( LIST_AUTO_DELETE, chart_set_delete );
+     /* load highscore */
+-    if ( !chart_load_from_path( HI_DIR ) ) {
+-        fprintf( stderr, "Unable to access highscore chart in '%s'.\n", HI_DIR );
+-        fprintf( stderr, "Trying to use config directory '%s'.\n", config.dir_name );
+-        if ( !chart_load_from_path( config.dir_name ) ) {
++    if ( !chart_load_from_path( config.dir_name ) ) {
+             fprintf( stderr, "Unable to access highscore chart in config directory... won't be "
+                              "able to save any results. Sorry.\n" );
+             return;
+-        }
+     }
+     printf( "Saving highscore chart in: %s\n", chart_path );
+     /* load resources */
+--- src/Makefile.in.orig	2011-10-31 12:00:55.535000463 +0100
++++ src/Makefile.in	2011-10-31 12:01:03.235000463 +0100
+@@ -610,10 +610,6 @@
+ install-data-local:
+ 	$(mkinstalldirs) $(DESTDIR)$(inst_dir)
+ 	$(INSTALL_DATA) figures $(DESTDIR)$(inst_dir)/figures
+-	$(mkinstalldirs) $(DESTDIR)$(hi_dir)
+-	if ! test -f $(DESTDIR)$(hi_dir)/ltris.hscr; then \
+-	  $(INSTALL_DATA) --mode=666 empty.hscr $(DESTDIR)$(hi_dir)/ltris.hscr; \
+-	fi;
+ 
+ uninstall-local:
+ 	-rm -fr $(DESTDIR)$(inst_dir)
+--- src/Makefile.am.orig	2011-03-02 11:10:19.000000000 +0100
++++ src/Makefile.am	2011-10-31 12:00:50.627000462 +0100
+@@ -18,10 +18,6 @@
+ install-data-local:
+ 	$(mkinstalldirs) $(DESTDIR)$(inst_dir)
+ 	$(INSTALL_DATA) figures $(DESTDIR)$(inst_dir)/figures
+-	$(mkinstalldirs) $(DESTDIR)$(hi_dir)
+-	if ! test -f $(DESTDIR)$(hi_dir)/ltris.hscr; then \
+-	  $(INSTALL_DATA) --mode=666 empty.hscr $(DESTDIR)$(hi_dir)/ltris.hscr; \
+-	fi;
+ 
+ uninstall-local:
+ 	-rm -fr $(DESTDIR)$(inst_dir)

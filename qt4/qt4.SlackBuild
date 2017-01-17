@@ -1,0 +1,824 @@
+#!/bin/sh
+#-- qt4 for Slackware --
+# Build script by Phantom X <megaphantomx at bol.com.br>
+# Suggested usage: $ qt4.SlackBuild 2>&1 | tee build.log
+#--
+# Using code from Rex Dieter <rexdieter[AT]users.sf.net> RPM spec file
+# Copyright 2008-2015 Phantom X, Goiania, Brazil.
+# Copyright 2006 Martijn Dekker, Groningen, Netherlands.
+#
+# Redistribution and use of this script, with or without modification, is
+# permitted provided that the following conditions are met:
+#
+# 1. Redistributions of this script must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE AUTHOR `AS IS'' AND ANY EXPRESS OR IMPLIED
+#  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+#  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO
+#  EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+#  OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+#  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+#  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+#  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+# http://www.qtsoftware.com/
+
+# Set YES for native build with gcc >= 4.2
+SB_NATIVE=${SB_NATIVE:-NO}
+
+# Set to YES to replicate slackbuild and patches
+SB_REP=${SB_REP:-YES}
+
+CWD=$(pwd)
+TMP=${TMP:-/tmp}
+
+PNAME=qt
+NAME=${PNAME}4
+PKG=${PKG:-${TMP}/package-${NAME}}
+
+VERSION=${VERSION:-4.8.7}
+RVER=$(echo ${VERSION} | cut -d- -f1)
+SVER=$(echo ${RVER} | cut -d. -f1-2)
+if [ "${SB_NATIVE}" = "YES" ] ;then
+  ARCH=${ARCH:-$(uname -m)}
+else
+  ARCH=${ARCH:-x86_64}
+fi
+BUILD=${BUILD:-2}
+NJOBS=${NJOBS:-$(( $(getconf _NPROCESSORS_ONLN) + 1 ))}
+DOCDIR=${PKG}/usr/doc/${NAME}-${VERSION}
+SBDIR=${PKG}/usr/src/slackbuilds/${NAME}
+PKGDEST=${PKGDEST:-${CWD}}
+PKGFORMAT=${PKGFORMAT:-txz}
+PKGNAME=${NAME}-$(echo ${VERSION} | tr - . )-${ARCH}-${BUILD}${PACKAGER_ID}
+
+# Set to YES to enable precompiled headers
+SB_PCH=${SB_PCH:-NO}
+
+# Set to YES to enable phonon support
+SB_PHONON=${SB_PHONON:-NO}
+SB_PHONON_BACKEND=${SB_PHONON_BACKEND:-NO}
+# Set to YES to use internal phonon, else standalone phonon package is REQUIRED after,
+# case above options is YES (disabled by default if SB_PHONON=NO)
+SB_PHONON_INTERNAL=${SB_PHONON_INTERNAL:-NO}
+
+# Set to YES to enable webkit module
+SB_WEBKIT=${SB_WEBKIT:-YES}
+
+# Set to YES to build demo and examples
+SB_DEMOS=${SB_DEMOS:-NO}
+
+# Set to YES to enable postgresql plugin
+SB_PGSQL=${SB_PGSQL:-NO}
+
+DATE=$(LC_ALL=C date +%d-%b-%Y)
+
+SRCDIR=${PNAME}-everywhere-opensource-src-${RVER}
+SRCARCHIVE=${PNAME}-everywhere-opensource-src-${VERSION}.tar.gz
+PSRCARCHIVE=kde-qt-patches-${PVER}.tar.xz
+
+DL_PROG=${DL_PROG:-wget}
+DL_TO=${DL_TO:-5}
+DL_OPTS=${DL_OPTS:-"--timeout=${DL_TO}"}
+DL_URL="http://download.qt-project.org/official_releases/qt/${SVER}/${VERSION}/${SRCARCHIVE}"
+DL_URLB="http://download.qt-project.org/snapshots/qt/${SVER}/${VERSION//RC/rc}/${SRCARCHIVE}"
+
+# if source is not present, download in source rootdir if possible
+test -r ${CWD}/${SRCARCHIVE} || ${DL_PROG} ${DL_OPTS} ${DL_URL} || ${DL_PROG} ${DL_OPTS} ${DL_URLB} || exit 1
+
+[ "$1" = "--dlsrc" ] && exit 0
+
+if [ "${SB_NATIVE}" = "YES" ] ;then
+  SLKCFLAGS="-O2 -march=native -mtune=native -pipe"
+  [ "${SB_ECFLAGS}" ] && SLKCFLAGS="${SLKCFLAGS} ${SB_ECFLAGS}"
+else
+  case "${ARCH}" in
+    i[3-6]86)    SLKCFLAGS="-O2 -march=${ARCH} -mtune=i686"
+                 ;;
+    x86_64)      SLKCFLAGS="-O2 -fPIC"
+                 ;;
+    s390|*)      SLKCFLAGS="-O2"
+                 ;;
+  esac
+fi
+if [ "${ARCH}" = "x86_64" ] ;then
+  LIBDIRSUFFIX="64"
+  SLKCFLAGS="${SLKCFLAGS} -fPIC"
+else
+  LIBDIRSUFFIX=""
+fi
+
+unset CFLAGS CXXFLAGS CPPFLAGS
+
+if [ ! -d ${TMP} ]; then
+  mkdir -p ${TMP}
+fi
+if [ -d ${PKG} ]; then
+  # Clean up a previous build
+  rm -rf ${PKG}
+fi
+mkdir -p ${PKG}
+
+cd ${TMP}
+rm -rf ${SRCDIR}
+tar -xvf ${CWD}/${SRCARCHIVE} || exit 1
+cd ${SRCDIR} || exit 1
+
+SB_SROOT="$(pwd)"
+
+# Set the config option variables if they are not already set:
+[ -r ../qt4.options ] && source ../qt4.options
+
+# these should match contents of qt4.macros:
+_qt4_prefix=${_qt4_prefix:-/usr/lib${LIBDIRSUFFIX}/qt4}
+_qt4_bindir=${_qt4_bindir:-${_qt4_prefix}/bin}
+_qt4_datadir=${_qt4_datadir:-${_qt4_prefix}}
+_qt4_demosdir=${_qt4_demosdir:-${_qt4_prefix}/demos}
+_qt4_docdir=${_qt4_docdir:-/usr/doc/qt4}
+_qt4_examplesdir=${_qt4_examplesdir:-${_qt4_prefix}/examples}
+_qt4_headerdir=${_qt4_headerdir:-/usr/include}
+_qt4_libdir=${_qt4_libdir:-/usr/lib${LIBDIRSUFFIX}}
+_qt4_plugindir=${_qt4_plugindir:-${_qt4_prefix}/plugins}
+_qt4_sysconfdir=${_qt4_sysconfdir:-/etc}
+_qt4_translationdir=${_qt4_translationdir:-/usr/share/qt4/translations}
+
+unset QTDIR QTINC QTLIB QMAKESPEC
+export QT4DIR="$(pwd)"
+export PATH="${QT4DIR}/bin${PATH:+:${PATH}}"
+export LD_LIBRARY_PATH="${QT4DIR}/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
+#export CXXFLAGS+=" -std=gnu++98" # Fix build with GCC 6
+
+# Fix file perms:
+chmod -R u+w,go+r-w,a-s .
+
+if [ -r ${CWD}/apply-patches.sh ]; then
+  . ${CWD}/apply-patches.sh
+fi
+
+for ts in qt_pt_BR qtconfig_pt_BR ;do
+  if [ -f ${CWD}/ts/${ts}.ts.gz ] ;then
+    zcat ${CWD}/ts/${ts}.ts.gz > translations/${ts}.ts || exit 1
+  fi
+done
+
+# drop -fexceptions from $SLKCFLAGS
+SLKCFLAGS="$(echo ${SLKCFLAGS} | sed 's|-fexceptions||g')"
+
+## customize our platform
+if [ "lib${LIBDIRSUFFIX}" == "lib64" ] ;then
+  platform=linux-g++-64
+else
+  platform=linux-g++
+fi
+
+sed -i \
+  -e "s|-O2|${SLKCFLAGS}|g" \
+  -e "s|g++.conf|g++-multilib.conf|g" \
+  -e '/^QMAKE_LIBDIR_X11/d' \
+  -e '/^QMAKE_LIBDIR_OPENGL/d' \
+  mkspecs/linux-g++{,-32,-64}/qmake.conf || exit 1
+sed -e "s|^QMAKE_CFLAGS_RELEASE|#QMAKE_CFLAGS_RELEASE|g" \
+ mkspecs/common/g++.conf > mkspecs/common/g++-multilib.conf
+
+# 
+if [ "${_qt4_libdir}" == "/usr/lib${LIBDIRSUFFIX}" ] ;then
+  sed -i \
+    -e "s,QMAKE_LIBDIR_X11.*,QMAKE_LIBDIR_X11\t=," \
+    -e "s,QMAKE_INCDIR_X11.*,QMAKE_INCDIR_X11\t=," \
+    -e "s,QMAKE_INCDIR_OPENGL.*,QMAKE_INCDIR_OPENGL\t=," \
+    -e "s,QMAKE_LIBDIR_OPENGL.*,QMAKE_LIBDIR_OPENGL\t=," \
+    mkspecs/common/linux.conf
+fi
+
+unset SLKLDFLAGS
+if [ "${LDFLAGS}" ] ;then
+  SLKLDFLAGS="${LDFLAGS}"
+  sed -i -e "/^QMAKE_LFLAGS_RELEASE/s|$| ${SLKLDFLAGS}|g" \
+            mkspecs/*/qmake*.conf mkspecs/common/g++-multilib.conf || exit 1
+fi
+unset LDFLAGS
+
+# undefine QMAKE_STRIP, so we get useful -debuginfo pkgs
+sed -i -e "s|^QMAKE_STRIP.*=.*|QMAKE_STRIP             =|" \
+  mkspecs/common/linux.conf
+
+# set correct lib path
+if [ "lib${LIBDIRSUFFIX}" == "lib64" ] ; then
+  sed -i -e "s,/usr/lib /lib,/usr/lib${LIBDIRSUFFIX} /lib${LIBDIRSUFFIX},g" config.tests/{unix,x11}/*.test
+  sed -i -e "s,/lib /usr/lib,/lib${LIBDIRSUFFIX} /usr/lib${LIBDIRSUFFIX},g" config.tests/{unix,x11}/*.test
+fi
+
+# let syncqt to create new header
+rm -rf include
+
+unset SB_DEMOSOPTS SB_PCHOPTS SB_PHONONOPTS SB_PHONON_BACKENDOPTS SB_WEBKITOPTS SB_PGSQLOPTS
+if [ "${SB_DEMOS}" != "YES" ] ; then
+  sed -i '/^CFG_NOBUILD_PARTS=/s|"$| demos examples"|g' \
+    configure || exit 1
+  SB_DEMOSOPTS="-nomake demos -nomake examples"
+fi
+
+# let makefile create missing .qm files, the .qm files should be included in qt upstream
+for f in translations/*.ts ; do
+  touch ${f%.ts}.qm
+done
+
+[ "${SB_PCH}" == "YES" ] || SB_PCHOPTS="-no-pch"
+if [ "${SB_PHONON}" == "YES" ] ;then
+  SB_PHONONOPTS="-phonon"
+else
+  SB_PHONONOPTS="-no-phonon"
+  SB_PHONON_BACKEND=NO
+  SB_PHONON_INTERNAL=NO
+fi
+if [ "${SB_PHONON_BACKEND}" == "YES" ] ;then
+  SB_PHONON_BACKENDOPTS="-phonon-backend"
+else
+  SB_PHONON_BACKENDOPTS="-no-phonon-backend"
+fi
+[ "${SB_WEBKIT}" = "YES" ] || SB_WEBKITOPTS="-no-webkit"
+
+[ "${SB_PGSQL}" = "YES" ] && SB_PGSQLOPTS="-plugin-sql-psql"
+
+# And here's what we are currently using.  The "-confirm-license" agrees to the GPL, so don't run this script if you
+# don't agree.  :-)
+./configure -v \
+  -confirm-license \
+  -opensource \
+  -optimized-qmake \
+  -prefix ${_qt4_prefix} \
+  -bindir ${_qt4_bindir} \
+  -datadir ${_qt4_datadir} \
+  -demosdir ${_qt4_demosdir} \
+  -docdir ${_qt4_docdir} \
+  -examplesdir ${_qt4_examplesdir} \
+  -headerdir ${_qt4_headerdir} \
+  -libdir ${_qt4_libdir} \
+  -plugindir ${_qt4_plugindir} \
+  -sysconfdir ${_qt4_sysconfdir} \
+  -translationdir ${_qt4_translationdir} \
+  -platform ${platform} \
+  -release \
+  -shared \
+  -cups \
+  -fontconfig \
+  -largefile \
+  -gtkstyle \
+  -no-rpath \
+  -no-reduce-relocations \
+  -no-separate-debug-info \
+  -sm \
+  -stl \
+  -system-libmng \
+  -system-libpng \
+  -system-libjpeg \
+  -system-libtiff \
+  -system-zlib \
+  -xinput \
+  -xcursor \
+  -xfixes \
+  -xinerama \
+  -xshape \
+  -xrandr \
+  -xrender \
+  -xkb \
+  -glib \
+  -icu \
+  -openssl-linked \
+  -xmlpatterns \
+  -opengl \
+  -dbus-linked \
+  -graphicssystem raster \
+  ${SB_PCHOPTS} ${SB_WEBKITOPTS} ${SB_PHONONOPTS} ${SB_PHONON_BACKENDOPTS} ${SB_DEMOSOPTS} \
+  -plugin-sql-mysql ${SB_PGSQLOPTS} \
+  -plugin-sql-sqlite -system-sqlite || exit 1
+
+make -j${NJOBS} -k || make || exit 1
+make -j${NJOBS} -C tools/qvfb || make -C tools/qvfb || exit $?
+
+LD_LIBRARY_PATH=$(pwd)/lib bin/lrelease translations/*.ts
+
+make install INSTALL_ROOT=${PKG} || exit 1
+make install INSTALL_ROOT=${PKG} -C tools/qvfb || exit $?
+
+rsync -aR \
+  include/Qt{Core,Declarative,Gui,Script}/private \
+  src/{corelib,declarative,gui,script}/*/*_p.h \
+  ${PKG}/usr/ || exit $?
+
+## pkg-config
+# strip extraneous dirs/libraries -- Rex
+# FIXME?: qt-4.5 seems to use Libs.private properly, so this hackery should 
+#         no longer be required -- Rex
+# safe ones
+glib2_libs="$(pkg-config --libs glib-2.0 gobject-2.0 gthread-2.0)"
+ssl_libs="$(pkg-config --libs openssl)"
+for dep in \
+  -laudio -ldbus-1 -lfreetype -lfontconfig ${glib2_libs} \
+  -ljpeg -lm -lmng -lpng -lpulse -lpulse-mainloop-glib ${ssl_libs} -lsqlite3 -lz \
+  -L/usr/X11R6/lib -L/usr/X11R6/lib${LIBDIRSUFFIX} -L/usr/lib${LIBDIRSUFFIX} \
+  -L${SB_SROOT}/lib ; do
+  sed -i -e "s|${dep} ||g" ${PKG}/${_qt4_libdir}/lib*.la ||:
+  #sed -i -e "s|${dep} ||g" ${PKG}/${_qt4_libdir}/pkgconfig/*.pc
+  sed -i -e "s|${dep} ||g" ${PKG}/${_qt4_libdir}/*.prl
+done
+
+# riskier
+for dep in -ldl -lphonon -lpthread -lICE -lSM -lX11 -lXcursor -lXext -lXfixes -lXft -lXinerama -lXi -lXrandr -lXrender -lXt ; do
+  sed -i -e "s|${dep} ||g" ${PKG}/${_qt4_libdir}/lib*.la ||:
+  #sed -i -e "s|${dep} ||g" ${PKG}/${_qt4_libdir}/pkgconfig/*.pc
+  sed -i -e "s|${dep} ||g" ${PKG}/${_qt4_libdir}/*.prl
+done
+
+# nuke dandling reference(s) to ${PKG}
+sed -i -e "/^QMAKE_PRL_BUILD_DIR/d" ${PKG}/${_qt4_libdir}/*.prl
+
+sed -i \
+  -e "s|-L${SB_SROOT}/lib||g" \
+  -e "/^Libs.private/s|-L/usr/lib${LIBDIRSUFFIX} ||g" \
+  -e "/^QMAKE_PRL_LIBS/s|-L/usr/lib${LIBDIRSUFFIX} ||g" \
+  -e "s|-ljscore ||g" \
+  -e "s|-lwebcore ||g" \
+  -e 's|-L../../WebCore/release ||g' \
+  -e 's|-L../../JavaScriptCore/release ||g' \
+  -e 's|-L../JavaScriptCore/release ||g' \
+  ${PKG}/${_qt4_libdir}/pkgconfig/*.pc \
+  ${PKG}/${_qt4_libdir}/*.prl
+
+# nuke QMAKE_PRL_LIBS, seems similar to static linking and .la files (#520323)
+#sed -i -e "s|^QMAKE_PRL_LIBS|#QMAKE_PRL_LIBS|" ${PKG}/${_qt4_libdir}/*.prl
+
+if [ "${_qt4_docdir}" != "${_qt4_prefix}/doc" ] ;then
+  # -doc make symbolic link to _qt4_docdir
+  rm -rf ${PKG}/${_qt4_prefix}/doc
+  ln -s  ../../doc/qt4 ${PKG}/${_qt4_prefix}/doc
+fi
+
+if [ "/usr/bin" = "${_qt4_bindir}" ] ;then
+  # compat symlink
+  rm -rf ${PKG}/${_qt4_prefix}/bin
+  ln -s ../../bin ${PKG}/${_qt4_prefix}/bin
+fi
+
+## Make symlinks in $bindir
+if [ "/usr/bin" != "${_qt4_bindir}" ] ;then
+  reldir=$(perl -e 'use File::Spec; print File::Spec->abs2rel($ARGV[0], $ARGV[1])' /usr/bin ${_qt4_bindir})
+  reldir2=$(perl -e 'use File::Spec; print File::Spec->abs2rel($ARGV[0], $ARGV[1])' ${_qt4_bindir} /usr/bin)
+  mkdir -p ${PKG}/usr/bin
+  ( cd ${PKG}/${_qt4_bindir}
+    for i in *; do
+      case "${i}" in
+        assistant|qdbusviewer|designer|linguist|lrelease|lupdate|moc|qmake|qtconfig|qtdemo|uic)
+          ln -sv  ${reldir2}/${i} ${reldir}/${i}-qt4
+          ln -sv ${i} ${i}-qt4
+          ;;
+        # qt4/qtchooser stuff
+        qmlviewer)
+          ln -sv  ${reldir2}/${i} ${reldir}/${i}
+          ln -sv  ${reldir2}/${i} ${reldir}/${i}-qt4
+          ln -sv ${i} ${i}-qt4
+          ;;
+        *)
+          ln -sv  ${reldir2}/${i} ${reldir}/${i}
+          ;;
+      esac
+    done
+  ) || exit 1
+fi
+
+# _debug lib symlinks
+( cd ${PKG}/${_qt4_libdir}
+  for lib in libQt*.so ; do
+    libbase=$(basename ${lib} .so | sed -e 's/^lib//')
+    #ln -s ${lib} $(basename ${lib} .so)_debug.so
+    echo "INPUT(-l${libbase})" > lib${libbase}_debug.so 
+  done
+  for lib in libQt*.a ; do
+    if [ -e ${lib} ] ;then
+      libbase=$(basename ${lib} .a | sed -e 's/^lib//')
+      #ln -s ${lib} $(basename ${lib} .a)_debug.a
+      echo "INPUT(-l${libbase})" > lib${libbase}_debug.a
+    fi
+  done
+) || exit 1
+
+# .la files, die, die, die.
+rm -f ${PKG}/${_qt4_libdir}/lib*.la
+
+# Put this back as shipped:
+sed -i -e "s|${SLKCFLAGS}|-O2|g" \
+          ${PKG}/${_qt4_datadir}/mkspecs/*/qmake.conf || exit 1
+if [ "${SLKLDFLAGS}" ] ;then
+  sed -i -e "/^QMAKE_LFLAGS_RELEASE/s| ${SLKLDFLAGS}||g" \
+    ${PKG}/${_qt4_datadir}/mkspecs/*/qmake*.conf \
+    ${PKG}/${_qt4_datadir}/mkspecs/common/g++-multilib.conf || exit 1
+fi
+
+unset MARCH
+# multilib: qconfig.h
+case "${ARCH}" in
+  i[3-6]86)  MARCH=32
+             ;;
+    s390)    MARCH=32
+             ;;
+    x86_64)  MARCH=64
+             ;;
+esac
+
+if [ -n "${MARCH}" ] ;then
+  mkdir -p ${PKG}/${_qt4_headerdir}/QtCore
+  mv ${PKG}/${_qt4_headerdir}/Qt/qconfig.h \
+    ${PKG}/${_qt4_headerdir}/QtCore/qconfig-${MARCH}.h || exit 1
+
+cat > ${PKG}/${_qt4_headerdir}/QtCore/qconfig-multilib.h <<'EOF'
+/* qconfig.h */
+/* This file is here to prevent a file conflict on multiarch systems.  A
+ * conflict will occur because qconfig.h has arch-specific definitions.
+ *
+ * DO NOT INCLUDE THE NEW FILE DIRECTLY -- ALWAYS INCLUDE THIS ONE INSTEAD. */
+
+#ifndef QCONFIG_MULTILIB_H
+#define QCONFIG_MULTILIB_H
+#include <bits/wordsize.h>
+
+#if __WORDSIZE == 32
+#include "QtCore/qconfig-32.h"
+#elif __WORDSIZE == 64
+#include "QtCore/qconfig-64.h"
+#else
+#error "unexpected value for __WORDSIZE macro"
+#endif
+
+#endif
+EOF
+  chmod 0644 ${PKG}/${_qt4_headerdir}/QtCore/qconfig-multilib.h || exit 1
+  ln -sf qconfig-multilib.h ${PKG}/${_qt4_headerdir}/QtCore/qconfig.h
+  ln -sf ../QtCore/qconfig.h ${PKG}/${_qt4_headerdir}/Qt/qconfig.h
+fi
+
+if [ "${_qt4_datadir}" != "${_qt4_prefix}" ] ;then
+  # multilib: mkspecs hacks, unfortunately, breaks some stuff
+  mkdir -p ${PKG}/${_qt4_prefix}/mkspecs
+  mv ${PKG}/${_qt4_datadir}/mkspecs/{default,linux-g++*,qconfig.pri} \
+     ${PKG}/${_qt4_prefix}/mkspecs/
+  ln -s ${_qt4_datadir}/mkspecs/common ${PKG}/${_qt4_prefix}/mkspecs/common
+fi
+
+mkdir -p ${PKG}/etc/xdg/qtchooser
+( cd ${PKG}/etc/xdg/qtchooser
+  echo "${_qt4_bindir}" >  4.conf
+  echo "${_qt4_prefix}" >> 4.conf
+  ln -s 4.conf default.conf
+  if [ -n "${MARCH}" ] ;then
+    mv 4.conf 4-${MARCH}.conf
+    ln -sf 4-${MARCH}.conf 4.conf
+  fi
+)
+
+# Trolltech.conf
+mkdir -p ${PKG}/${_qt4_sysconfdir}
+zcat ${CWD}/Trolltech.conf.gz \
+  > ${PKG}/${_qt4_sysconfdir}/Trolltech.conf.new
+
+if [ ! -d ${PKG}/${_qt4_translationdir} ] ;then
+  mkdir -p ${PKG}/${_qt4_translationdir}
+  ${QT4DIR}/bin/lrelease -nounfinished -removeidentical translations/*.ts
+  install -pm0644 translations/*.qm ${PKG}/${_qt4_translationdir}/
+fi
+
+if [ "${_qt4_libdir}" != "/usr/lib${LIBDIRSUFFIX}" ] ;then
+mkdir -p ${PKG}/etc/ld.so.conf.d
+cat > ${PKG}/etc/ld.so.conf.d/qt4-${ARCH}.conf.new << EOF
+${_qt4_libdir}
+EOF
+fi
+
+mkdir -p ${PKG}/${_qt4_plugindir}/crypto
+mkdir -p ${PKG}/${_qt4_plugindir}/styles
+mkdir -p ${PKG}/${_qt4_plugindir}/gui_platform
+
+if [ "${SB_PHONON}" == "YES" ] && [ "${SB_PHONON_INTERNAL}" == "YES" ] ;then
+  mkdir -p ${PKG}/${_qt4_plugindir}/phonon_backend
+  ( cd ${PKG}/${_qt4_headerdir}
+    ln -s phonon Phonon
+  )
+else
+  rm -fv  ${PKG}/${_qt4_libdir}/libphonon.so*
+  rm -rfv ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/phonon.pc
+  rm -fv ${PKG}/${_qt4_plugindir}/designer/libphononwidgets.so
+  # contents slightly different between phonon-4.3.1 and qt-4.5.0
+  rm -fv  ${PKG}/usr/include/phonon/phononnamespace.h
+  # contents dup'd but should remove just in case
+  rm -fv  ${PKG}/usr/include/phonon/*.h
+  rm -rfv ${PKG}/${_qt4_headerdir}/phonon*
+  #rm -rfv ${PKG}/${_qt4_headerdir}/Qt/phonon*
+  rm -fv ${PKG}/usr/share/dbus-1/interfaces/org.kde.Phonon.AudioOutput.xml
+fi
+
+if [ "${SB_WEBKIT}" != "YES" ] ;then
+  rm -fv  ${PKG}/${_qt4_datadir}/mkspecs/modules/qt_webkit_version.pri
+  rm -fv  ${PKG}/${_qt4_headerdir}/Qt/qgraphicswebview.h
+  rm -fv  ${PKG}/${_qt4_headerdir}/Qt/qweb*.h
+  rm -fv ${PKG}/${_qt4_headerdir}/Qt/QtWebKit
+  rm -frv ${PKG}/${_qt4_headerdir}/QtWebKit/
+  rm -frv ${PKG}/${_qt4_importdir}/QtWebKit/
+  rm -fv  ${PKG}/${_qt4_libdir}/libQtWebKit*
+  rm -fv  ${PKG}/${_qt4_plugindir}/designer/libqwebview.so
+  rm -fv  ${PKG}/${_qt4_libdir}/pkgconfig/QtWebKit.pc
+fi
+
+find ${PKG} | xargs file | grep -e "executable" -e "shared object" | grep ELF \
+  | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+
+# Qt.pc
+cat > ${PKG}/usr/lib${LIBDIRSUFFIX}/pkgconfig/Qt.pc <<EOFP
+prefix=${_qt4_prefix}
+exec_prefix=\${prefix}
+bindir=${_qt4_bindir}
+datadir=${_qt4_datadir}
+demosdir=${_qt4_demosdir}
+docdir=${_qt4_docdir}
+examplesdir=${_qt4_examplesdir}
+headerdir=${_qt4_headerdir}
+libdir=${_qt4_libdir}
+moc=${_qt4_bindir}/moc
+plugindir=${_qt4_plugindir}
+qmake=${_qt4_bindir}/qmake
+sysconfdir=${_qt4_sysconfdir}
+translationdir=${_qt4_translationdir}
+
+Name: Qt
+Description: Qt Configuration
+Version: ${RVER}
+EOFP
+
+# rpm macros
+mkdir -p ${PKG}/usr/lib/rpm/macros.d
+cat > ${PKG}/usr/lib/rpm/macros.d/macros.qt4 <<EOFM
+%_qt4 ${NAME}
+%_qt48 ${RVER}
+%_qt4_version ${RVER}
+%_qt4_prefix %{_libdir}/qt4
+%_qt4_bindir %{_qt4_prefix}/bin
+%_qt4_datadir %{_qt4_prefix}
+%_qt4_demosdir %{_qt4_prefix}/demos
+%_qt4_docdir %{_docdir}/qt4
+%_qt4_examples %{_qt4_prefix}/examples
+%_qt4_headerdir %{_includedir}
+%_qt4_importdir %{_qt4_prefix}/imports
+%_qt4_libdir %{_libdir}
+%_qt4_plugindir %{_qt4_prefix}/plugins
+%_qt4_qmake %{_qt4_bindir}/qmake
+%_qt4_sysconfdir %{_sysconfdir}
+%_qt4_translationdir %{_qt4_datadir}/translations
+
+%qmake_qt4 \\
+  %{_qt4_qmake} \\\\\\
+  QMAKE_CFLAGS_DEBUG="${CFLAGS:-%optflags}" \\\\\\
+  QMAKE_CFLAGS_RELEASE="${CFLAGS:-%optflags}" \\\\\\
+  QMAKE_CXXFLAGS_DEBUG="${CXXFLAGS:-%optflags}" \\\\\\
+  QMAKE_CXXFLAGS_RELEASE="${CXXFLAGS:-%optflags}" \\\\\\
+  QMAKE_LFLAGS_DEBUG="${LDFLAGS:-%{?__global_ldflags}}" \\\\\\
+  QMAKE_LFLAGS_RELEASE="${LDFLAGS:-%{?__global_ldflags}}" \\\\\\
+  QMAKE_STRIP=
+
+EOFM
+
+
+# Add desktop file(s)
+mkdir -p ${PKG}/usr/share/applications
+cat > ${PKG}/usr/share/applications/${NAME}-assistant.desktop <<EOF1
+[Desktop Entry]
+Name=Qt4 Assistant
+Comment=Shows Qt4 documentation and examples
+Exec=assistant-qt4
+Icon=assistant4
+Terminal=false
+Type=Application
+Categories=Qt;Development;Documentation;
+EOF1
+
+cat > ${PKG}/usr/share/applications/${NAME}-designer.desktop <<EOF2
+[Desktop Entry]
+Name=Qt4 Designer
+GenericName=Interface Designer
+Comment=Design GUIs for Qt4 applications
+Exec=designer-qt4
+Icon=designer4
+MimeType=application/x-designer;
+Terminal=false
+Type=Application
+Categories=Qt;Development;
+EOF2
+
+cat > ${PKG}/usr/share/applications/${NAME}-linguist.desktop <<EOF3
+[Desktop Entry]
+Name=Qt4 Linguist
+Comment=Add translations to Qt4 applications
+Exec=linguist-qt4
+Icon=linguist4
+MimeType=application/x-linguist;
+Terminal=false
+Type=Application
+Categories=Qt;Development;Translation;
+EOF3
+
+cat > ${PKG}/usr/share/applications/${NAME}config.desktop <<EOF4
+[Desktop Entry]
+Name=Qt4 Config
+Comment=Configure Qt4 behavior, styles, fonts
+Exec=qtconfig-qt4
+Icon=qt4-logo
+Terminal=false
+Type=Application
+Categories=Qt;Settings;
+EOF4
+
+if [ "${SB_DEMOS}" == "YES" ] ; then
+cat > ${PKG}/usr/share/applications/${NAME}demo.desktop <<EOF5
+[Desktop Entry]
+Name=Qt4 Demo
+Comment=Show Qt4 demos and programming examples
+Exec=qtdemo-qt4
+Icon=qt4-logo
+Terminal=false
+Type=Application
+Categories=Qt;Development;
+EOF5
+else
+  rm -f ${PKG}/${_qt4_bindir}/qtdemo-qt4
+  rm -f ${PKG}/usr/bin/qtdemo-qt4
+fi
+
+cat > ${PKG}/usr/share/applications/${NAME}-qdbusviewer.desktop <<EOF5
+[Desktop Entry]
+Name=Qt4 QDbusViewer
+GenericName=D-Bus Debugger
+Comment=Debug D-Bus applications
+Exec=qdbusviewer-qt4
+Icon=qdbusviewer4
+Terminal=false
+Type=Application
+Categories=Qt;Development;Debugger;
+EOF5
+
+# qt4-logo (generic) icons
+mkdir -p ${PKG}/usr/share/icons/hicolor/128x128/apps
+zcat ${CWD}/hi128-app-qt4-logo.png.gz \
+  > ${PKG}/usr/share/icons/hicolor/128x128/apps/qt4-logo.png
+
+# designer icon
+install -p -m0644 tools/designer/src/designer/images/designer.png \
+  ${PKG}/usr/share/icons/hicolor/128x128/apps/designer4.png
+
+# assistant icon
+install -p -m0644 tools/assistant/tools/qhelpconverter/assistant-128.png \
+  ${PKG}/usr/share/icons/hicolor/128x128/apps/assistant4.png
+
+# linguist icons
+for icon in tools/linguist/linguist/images/icons/linguist-128-32.png ; do
+  size=$(echo $(basename ${icon}) | cut -d- -f2)
+  install -p -m644 -D ${icon} \
+    ${PKG}/usr/share/icons/hicolor/${size}x${size}/apps/linguist4.png
+done
+
+# qdbusviewer icon
+install -p -m0644 tools/qdbus/qdbusviewer/images/qdbusviewer-128.png \
+  ${PKG}/usr/share/icons/hicolor/128x128/apps/qdbusviewer4.png
+
+for res in 16 20 22 24 32 36 48 64 72 96 ;do
+  dir=${PKG}/usr/share/icons/hicolor/${res}x${res}/apps
+  mkdir -p ${dir}
+  for icon in qt4-logo assistant4 designer4 qdbusviewer4 ;do
+    convert ${PKG}/usr/share/icons/hicolor/128x128/apps/${icon}.png \
+      -filter Lanczos -resize ${res}x${res} ${dir}/${icon}.png || exit 1
+  done
+done
+
+if [ "${SB_PHONON_BACKEND}" == "YES" ] && [ "${SB_PHONON_INTERNAL}" == "YES" ] ;then
+  mkdir -p ${PKG}/usr/share/icons/hicolor/{128x128,scalable}/apps
+  zcat ${CWD}/gstreamer-logo.svg.gz \
+    > ${PKG}/usr/share/icons/hicolor/scalable/apps/phonon-gstreamer.svg || exit 1
+  zcat ${CWD}/hi128-phonon-gstreamer.png.gz \
+    > ${PKG}/usr/share/icons/hicolor/128x128/apps/phonon-gstreamer.png || exit 1
+  for i in 16 22 32 48 64; do
+    dir=${PKG}/usr/share/icons/hicolor/${i}x${i}/apps
+    mkdir -p ${dir}
+     convert ${PKG}/usr/share/icons/hicolor/128x128/apps/phonon-gstreamer.png \
+      -filter Lanczos -resize ${i}x${i} ${dir}/phonon-gstreamer.png || exit 1
+  done
+  touch --reference ${CWD}/gstreamer-logo.svg.gz \
+    ${PKG}/usr/share/icons/hicolor/${i}x${i}/apps/phonon-gstreamer.png
+else
+  rm -fv ${PKG}/${_qt4_plugindir}/phonon_backend/*_gstreamer.so
+  rm -fv ${PKG}/usr/share/kde4/services/phononbackends/gstreamer.desktop
+fi
+
+# Add a documentation directory:
+( cd ${PKG}/usr/doc && ln -s ${NAME} ${NAME}-${VERSION} )
+#mkdir -p ${DOCDIR}
+cp -a \
+  README* LICENSE.GPL* GPL_EXCEPTION*.TXT OPENSOURCE-*.TXT changes-* \
+  ${CWD}/ChangeLog.SB ${DOCDIR}/
+find ${DOCDIR}/ -type d -print0 | xargs -0 chmod 0755
+find ${DOCDIR}/ -type f -print0 | xargs -0 chmod 0644
+
+mkdir -p ${PKG}/install
+cat ${CWD}/slack-desc > ${PKG}/install/slack-desc
+cat ${CWD}/slack-required > ${PKG}/install/slack-required
+
+cat > ${PKG}/install/doinst.sh <<EOF
+# Figure out our root directory
+ROOTDIR=\$(pwd)
+unset CHROOT
+if test "\${ROOTDIR}" != "/"; then
+  CHROOT="chroot \${ROOTDIR} "
+  ROOTDIR="\${ROOTDIR}/"
+fi
+
+# Add ld.so.conf.d directory to /etc/ld.so.conf:
+if fgrep ld.so.conf.d etc/ld.so.conf 1> /dev/null 2> /dev/null ; then
+  true
+else
+  echo 'include /etc/ld.so.conf.d/*.conf' >> etc/ld.so.conf
+fi
+
+if [ -x usr/bin/update-desktop-database ]; then
+  \${CHROOT} /usr/bin/update-desktop-database /usr/share/applications >/dev/null 2>&1
+fi
+if [ -x usr/bin/gtk-update-icon-cache ]; then
+  \${CHROOT} /usr/bin/touch --no-create /usr/share/icons/hicolor >/dev/null 2>&1
+  \${CHROOT} /usr/bin/gtk-update-icon-cache /usr/share/icons/hicolor >/dev/null 2>&1
+fi
+
+config() {
+  NEW="\$1"
+  OLD="\$(dirname \$NEW)/\$(basename \$NEW .new)"
+  # If there's no config file by that name, mv it over:
+  if [ ! -r \$OLD ]; then
+    mv \$NEW \$OLD
+  elif [ "\$(cat \$OLD | md5sum)" = "\$(cat \$NEW | md5sum)" ]; then
+    # toss the redundant copy
+    rm \$NEW
+  fi
+  # Otherwise, we leave the .new copy for the admin to consider...
+}
+## List of conf files to check.  The conf files in your package should end in .new
+EOF
+
+( cd ${PKG}
+  find etc/ -name '*.new' -exec echo config {} ';' | sort >> ${PKG}/install/doinst.sh
+  echo >> ${PKG}/install/doinst.sh
+)
+
+if [ "${SB_REP}" = "YES" ] ;then
+  # Replicate slackbuild and patches
+  mkdir -p ${SBDIR}/{patches,ts}
+  install -m0644 ${CWD}/slack-desc ${CWD}/slack-required ${CWD}/ChangeLog.SB \
+    ${CWD}/apply-patches.sh ${CWD}/*.png.gz ${CWD}/Trolltech.conf.gz \
+    ${CWD}/gstreamer-*.svg.gz ${SBDIR}/
+  install -m0644 ${CWD}/patches/*.* \
+    ${SBDIR}/patches/
+  install -m0644 ${CWD}/ts/*.ts.gz \
+    ${SBDIR}/ts/
+  install -m0755 ${CWD}/${NAME}.SlackBuild \
+    ${SBDIR}/${NAME}.SlackBuild
+  rmdir ${SBDIR}/patches
+fi
+
+# Build package:
+set +o xtrace        # no longer print commands upon execution
+set -e
+
+ROOTCOMMANDS="set -o errexit -o xtrace ; cd ${PKG} ;
+  /bin/chown --recursive root:root .  ;"
+
+ROOTCOMMANDS="${ROOTCOMMANDS}
+  /sbin/makepkg --prepend --linkadd y --chown n ${PKGDEST}/${PKGNAME}.${PKGFORMAT} "
+
+if test ${UID} = 0; then
+  eval ${ROOTCOMMANDS}
+  set +o xtrace
+elif test "$(type -t fakeroot)" = 'file'; then
+  echo -e "\e[1mEntering fakeroot environment.\e[0m"
+  echo ${ROOTCOMMANDS} | fakeroot
+else
+  echo -e "\e[1mPlease enter your root password.\e[0m (Consider installing fakeroot.)"
+  /bin/su -c "${ROOTCOMMANDS}"
+fi
+
+# Clean up the extra stuff:
+if [ "$1" = "--cleanup" ]; then
+  echo "Cleaning..."
+  if [ -d ${TMP}/${SRCDIR} ]; then
+    rm -rf ${TMP}/${SRCDIR} && echo "${TMP}/${SRCDIR} cleanup completed"
+  fi
+  if [ -d ${PKG} ]; then
+    rm -rf ${PKG} && echo "${PKG} cleanup completed"
+  fi
+  rmdir ${TMP} && echo "${TMP} cleanup completed"
+fi
+exit 0

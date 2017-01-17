@@ -1,0 +1,86 @@
+--- a/src/bomi/bomi.pro
++++ b/src/bomi/bomi.pro
+@@ -1,6 +1,6 @@
+ TEMPLATE = app
+ CONFIG += link_pkgconfig debug_and_release precompile_header \
+-	c++11 object_parallel_to_source
++	c++14 object_parallel_to_source
+ macx:CONFIG -= app_bundle
+ 
+ QT = core gui network quick widgets sql xml svg
+--- a/src/bomi/configure.pro.in
++++ b/src/bomi/configure.pro.in
+@@ -1,5 +1,6 @@
+ CONFIG += @config@
+ LIBS += @rootdir@/build/lib/libmpv.a @libs@
+ QMAKE_CXXFLAGS += @cflags@
++QMAKE_CXXFLAGS -= -g
+ QMAKE_CC = @cc@
+ QMAKE_CXX = @cxx@
+--- a/src/bomi/dialog/encoderdialog.cpp
++++ b/src/bomi/dialog/encoderdialog.cpp
+@@ -255,7 +255,7 @@ auto EncoderDialog::run() -> QString
+ {
+     if (d->size.isEmpty())
+         return tr("No video stream exists.");
+-    d->g.unix = QDateTime::currentMSecsSinceEpoch();
++    d->g.epoch = QDateTime::currentMSecsSinceEpoch();
+     d->g.dateTime = QDateTime::currentDateTime();
+     d->g.start = d->ui.a->time();
+     d->g.end = d->ui.b->time();
+--- a/src/bomi/misc/filenamegenerator.cpp
++++ b/src/bomi/misc/filenamegenerator.cpp
+@@ -51,8 +51,8 @@ auto get(const FileNameGenerator *g, con
+         };
+         get[u"%MEDIA_DISPLAY_NAME%"_q] = [] (const FileNameGenerator *g) { return g->mediaName; };
+ 
+-        get[u"%UNIX%"_q]     = [] (const FileNameGenerator *g) { return _N(g->unix / 1000llu); };
+-        get[u"%UNIX_MS%"_q]  = [] (const FileNameGenerator *g) { return _N(g->unix); };
++        get[u"%UNIX%"_q]     = [] (const FileNameGenerator *g) { return _N(g->epoch / 1000llu); };
++        get[u"%UNIX_MS%"_q]  = [] (const FileNameGenerator *g) { return _N(g->epoch); };
+         return get;
+     }();
+     auto ret = func.value(ph);
+--- a/src/bomi/misc/filenamegenerator.hpp
++++ b/src/bomi/misc/filenamegenerator.hpp
+@@ -11,7 +11,7 @@ struct FileNameGenerator {
+     QTime start, end;
+     QString mediaName;
+     Mrl mrl;
+-    quint64 unix = 0;
++    quint64 epoch = 0;
+ };
+ 
+ #endif // FILENAMEGENERATOR_HPP
+--- a/src/bomi/misc/windowsize.cpp
++++ b/src/bomi/misc/windowsize.cpp
+@@ -101,7 +101,7 @@ auto WindowSizeWidget::values() const ->
+     QList<WindowSize> values; values.reserve(s_count);
+     for (int i = 0; i < s_count; ++i) {
+         auto &w = d->widgets[i];
+-        values.push_back({ w.base->currentIndex(), w.percent->value() * 1e-2 });
++        values.push_back({ static_cast<bool>(w.base->currentIndex()), w.percent->value() * 1e-2 });
+     }
+     Q_ASSERT(values.size() == s_count);
+     return values;
+--- a/src/bomi/player/mainwindow_p.cpp
++++ b/src/bomi/player/mainwindow_p.cpp
+@@ -910,7 +910,7 @@ auto MainWindow::Data::fileNameGenerator
+     g.dateTime = QDateTime::currentDateTime();
+     g.start = QTime::fromMSecsSinceStartOfDay(e.time());
+     g.end = end.isNull() ? g.start : end;
+-    g.unix = QDateTime::currentMSecsSinceEpoch();
++    g.epoch = QDateTime::currentMSecsSinceEpoch();
+     g.mrl = e.mrl();
+     g.mediaName = e.media()->name();
+     return g;
+--- a/src/bomi/player/mainwindow_p.hpp
++++ b/src/bomi/player/mainwindow_p.hpp
+@@ -101,7 +101,6 @@ struct MainWindow::Data {
+ 
+     struct {
+         QDate date; QTime time, position;
+-        quint64 unix = 0;
+         QMap<QString, std::function<QString(void)>> get;
+     } ph;
+     QTimer waiter, hider, dialogWorkaround;

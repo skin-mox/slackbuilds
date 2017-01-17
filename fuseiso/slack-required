@@ -1,0 +1,4 @@
+fuse >= 2.9.5-x86_64-1
+glib2 >= 2.46.2-x86_64-4
+glibc-solibs >= 2.24_multilib-x86_64-2alien
+zlib >= 1.2.8-x86_64-1

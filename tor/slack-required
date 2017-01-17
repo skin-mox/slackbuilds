@@ -1,0 +1,6 @@
+attr >= 2.4.47-x86_64-1
+glibc-solibs >= 2.22_multilib-x86_64-4alien
+libcap >= 2.22-x86_64-1
+libevent >= 2.0.21-x86_64-1
+openssl >= 1.0.2e-x86_64-1 | openssl-solibs >= 1.0.2e-x86_64-1
+zlib >= 1.2.8-x86_64-1

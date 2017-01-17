@@ -1,0 +1,4 @@
+glibc-solibs >= 2.24_multilib-x86_64-2alien
+libXau >= 1.0.8-x86_64-2
+libXdmcp >= 1.1.2-x86_64-2
+libxcb >= 1.12-x86_64-1

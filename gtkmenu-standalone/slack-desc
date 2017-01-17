@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in.  You must
+# make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':'.
+
+       |-----handy-ruler------------------------------------------------------|
+gtkmenu-standalone: 
+gtkmenu-standalone: GTK Menu Standalone - is a standalone applications menu 
+gtkmenu-standalone: written in C for Unix-like (Linux, *BSD) operating systems.  
+gtkmenu-standalone: It can be run by your favorite launcher (bbbutton, fluxbox menu, 
+gtkmenu-standalone: with a hotkey app/binding, etc). This menu always shows the 
+gtkmenu-standalone: latest installed applications that have .desktop entries in the 
+gtkmenu-standalone: user and system applications directories. 
+gtkmenu-standalone:
+gtkmenu-standalone:
+gtkmenu-standalone:
+gtkmenu-standalone:

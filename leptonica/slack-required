@@ -1,0 +1,9 @@
+giflib >= 5.1.1-x86_64-1
+glibc-solibs >= 2.24_multilib-x86_64-2alien
+libjpeg-turbo >= 1.5.0-x86_64-1
+libpng >= 1.6.23-x86_64-1
+libtiff >= 4.0.6-x86_64-1
+libwebp >= 0.5.1-x86_64-1gl
+openjpeg >= 2.1.0-x86_64-1
+xz >= 5.2.2-x86_64-1
+zlib >= 1.2.8-x86_64-1

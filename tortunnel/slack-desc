@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.  Line
+# up the first '|' above the ':' following the base package name, and the '|'
+# on the right side marks the last column you can put a character in.  You must
+# make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':'.
+
+           |-----handy-ruler------------------------------------------------------|
+tortunnel: 
+tortunnel: Tortunnel is a partial Onion Proxy implementation that's designed to build 
+tortunnel: single-hop circuits through Tor exit nodes. This is useful in cases where you
+tortunnel: might want some very low level of anonymity and don't want to deal with the 
+tortunnel: performance implications of using Tor's full three-hop circuits.
+tortunnel:
+tortunnel:
+tortunnel:
+tortunnel:
+tortunnel:
+tortunnel:
