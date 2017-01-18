@@ -1,0 +1,23 @@
+Description: GNOME provides a Videos directory in $HOME folders,
+ place default "Save Folder" location there.
+Author: Luca Falavigna <dktrkranz@debian.org>
+Forwarded: not-needed
+Bug-Ubuntu: https://launchpad.net/bugs/209592
+
+Index: oggconvert-0.3.3/OggConvert/ocv_main.py
+===================================================================
+--- oggconvert-0.3.3.orig/OggConvert/ocv_main.py	2010-05-24 20:11.35.536963832 +0100
++++ oggconvert-0.3.3/OggConvert/ocv_main.py	2010-05-24 20:11.35.536963832 +0100
+@@ -308,7 +308,11 @@
+         self._file_chooser_button.add_filter(audio)
+         self._file_chooser_button.add_filter(allfiles)
+         
+-        self._file_chooser_button.set_current_folder(
++        if os.path.exists(os.path.expanduser("~/Videos")):
++            self._file_chooser_button.set_current_folder(
++                        os.path.expanduser("~/Videos"))
++        else:
++            self._file_chooser_button.set_current_folder(
+                         os.path.expanduser("~"))
+         
+         self._file_chooser_button.set_local_only(False)

@@ -1,12 +1,12 @@
 #!/bin/sh
 # Heavily based on the Slackware 14.2 SlackBuild
 #
-# Created by: Christoph Willing <chris.willing@linux.com>
+# Created by: Skin Mox <skin-mox@bol.com.br>
 #
 #
 # 
 # 
-# Modified by: Skin Mox <skin-mox@bol.com.br>
+# 
 #  
 #
 # Redistribution and use of this script, with or without modification, is
@@ -28,31 +28,29 @@
 # 
 #
 #
-# Official Site: https://obsproject.com/
+# Official Site: Homepage: https://launchpad.net/oggconvert
 #
 
 # Set variables:
 CWD=`pwd`
 OUTPUT=${OUTPUT:-$CWD}
-PKGNAME=obs-studio
+PKGNAME=oggconvert
 TMP=${TMP:-/tmp/txz/$PKGNAME}
 PKG=$TMP/package
-VERSION=${VERSION:-17.0.1}
+VERSION=${VERSION:-0.3.3}
 ARCH=${ARCH:-$(uname -m)}
 JOBS=${JOBS:--j5}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 TAG=${TAG:-sm}
-SUFFIX=${SUFFIX:-tar.gz}
 
-SOURCE="https://github.com/jp9000/${PKGNAME}/archive/${VERSION}.${SUFFIX}"
-FILE=${PKGNAME}-${VERSION}.${SUFFIX}
+SOURCE="https://launchpad.net/oggconvert/trunk/$VERSION/+download/$PKGNAME-$VERSION.tar.gz"
 
 TAR=${TAR:-$(basename $SOURCE)}
+DIR=${DIR:-$(echo "$TAR"|sed -r 's/(\.tar|)(.gz|.bz2|.xz|.tgz|)$//')}
 
 # Download source tarball if still not present
-if [ ! -e $CWD/$FILE ]; then
+if [ ! -e $CWD/$TAR ]; then
    wget -c $SOURCE -O "$CWD/$TAR" || exit 1
-   mv $TAR $FILE
 fi
 
 # Set compiling FLAGS
@@ -77,46 +75,24 @@ fi
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT 
 
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "[\033[01;32m  Decompress the source tarball  \033[01;37m] "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-sleep 2
-
 # Decompress the source tarball
 cd $TMP
-tar xvf $CWD/$FILE || exit 1
-cd $PKGNAME-$VERSION || exit 1
+tar xvf $CWD/$TAR || exit 1
+cd $DIR || exit 1
 
 echo -e "\E[0;32m#####                              \E[0;0m"
 echo -e "\E[0;32m+++++ Start SlackBuild $PKGNAME    \E[0;0m"
 echo -e "\E[0;32m#####                              \E[0;0m"
 
-# Apply some patches
-#patch -p1 < $CWD/patches/Makefile.patch --verbose || exit 1
-
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "[\033[01;32m  Building  package  \033[01;37m] "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-sleep 2
-
 # Building  package
-mkdir -p build
-cd build
-  cmake \
-    -DCMAKE_C_FLAGS:STRING="$SLKCFLAGS" \
-    -DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS" \
-    -DCMAKE_INSTALL_PREFIX=/usr \
-    -DOBS_MULTIARCH_SUFFIX="$LIBDIRSUFFIX" \
-    -DUNIX_STRUCTURE=ON \
-    -DUSE_SSL=ON \
-    -DCMAKE_BUILD_TYPE=Release ..
-  make || exit 1
-  make install DESTDIR=$PKG || exit 1
-cd ..
+export LDFLAGS="$SLKLDFLAGS" 
+export CFLAGS="$SLKCFLAGS" 
+export CXXFLAGS="$SLKCFLAGS" 
+
+patch -p1 < $CWD/patches/desktop_file_validation.patch  --verbose || exit 1
+patch -p1 < $CWD/patches/default_location.patch  --verbose || exit 1
+
+python setup.py install --root=$PKG || exit 1
 
 # Strip binaries and shared objects, if present
 ( cd $PKG
@@ -145,14 +121,6 @@ if [ -x $CWD/patches ];then
    chmod 644 $PKG/usr/doc/$PKGNAME-$VERSION/SlackBuild/patches/*
 fi
 
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "[\033[01;32m  Building some post-install execution script  \033[01;37m] "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-echo ""
-sleep 2
-
 # Building some post-install execution script 	
 	echo "if [ -x /usr/bin/update-desktop-database ]; then
   /usr/bin/update-desktop-database &> /dev/null
@@ -176,13 +144,6 @@ cd $PKG
 if [ -x /usr/bin/requiredbuilder ];then
    requiredbuilder -y -v -b -s  $CWD $PKG
 fi
-
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "[\033[01;32m  Create txz package  \033[01;37m] "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-sleep 2
 
 # Create txz package
 ROOTCOMMANDS="set -o errexit -o xtrace ; cd ${PKG} ;

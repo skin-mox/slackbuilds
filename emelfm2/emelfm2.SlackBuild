@@ -1,13 +1,13 @@
 #!/bin/sh
 # Heavily based on the Slackware 14.2 SlackBuild
 #
-# Created by: Christoph Willing <chris.willing@linux.com>
+# Created by: Skin Mox <skin-mox@bol.com.br>
 #
 #
 # 
 # 
-# Modified by: Skin Mox <skin-mox@bol.com.br>
-#  
+# 
+# 
 #
 # Redistribution and use of this script, with or without modification, is
 # permitted provided that the following conditions are met:
@@ -28,31 +28,29 @@
 # 
 #
 #
-# Official Site: https://obsproject.com/
+# Official Site: http://emelfm2.net/
 #
 
 # Set variables:
 CWD=`pwd`
 OUTPUT=${OUTPUT:-$CWD}
-PKGNAME=obs-studio
+PKGNAME=emelfm2
 TMP=${TMP:-/tmp/txz/$PKGNAME}
 PKG=$TMP/package
-VERSION=${VERSION:-17.0.1}
+VERSION=${VERSION:-0.9.1}
 ARCH=${ARCH:-$(uname -m)}
 JOBS=${JOBS:--j5}
 BUILD=${BUILD:-1}
 TAG=${TAG:-sm}
-SUFFIX=${SUFFIX:-tar.gz}
 
-SOURCE="https://github.com/jp9000/${PKGNAME}/archive/${VERSION}.${SUFFIX}"
-FILE=${PKGNAME}-${VERSION}.${SUFFIX}
+SOURCE="http://emelfm2.net/rel/$PKGNAME-$VERSION.tar.bz2"
 
 TAR=${TAR:-$(basename $SOURCE)}
+DIR=${DIR:-$(echo "$TAR"|sed -r 's/(\.tar|)(.gz|.bz2|.xz|.tgz|)$//')}
 
 # Download source tarball if still not present
-if [ ! -e $CWD/$FILE ]; then
+if [ ! -e $CWD/$TAR ]; then
    wget -c $SOURCE -O "$CWD/$TAR" || exit 1
-   mv $TAR $FILE
 fi
 
 # Set compiling FLAGS
@@ -77,46 +75,40 @@ fi
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT 
 
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "[\033[01;32m  Decompress the source tarball  \033[01;37m] "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-sleep 2
-
 # Decompress the source tarball
 cd $TMP
-tar xvf $CWD/$FILE || exit 1
-cd $PKGNAME-$VERSION || exit 1
+tar xvf $CWD/$TAR || exit 1
+cd $DIR || exit 1
 
 echo -e "\E[0;32m#####                              \E[0;0m"
 echo -e "\E[0;32m+++++ Start SlackBuild $PKGNAME    \E[0;0m"
 echo -e "\E[0;32m#####                              \E[0;0m"
 
-# Apply some patches
-#patch -p1 < $CWD/patches/Makefile.patch --verbose || exit 1
-
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "[\033[01;32m  Building  package  \033[01;37m] "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-sleep 2
-
 # Building  package
-mkdir -p build
-cd build
-  cmake \
-    -DCMAKE_C_FLAGS:STRING="$SLKCFLAGS" \
-    -DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS" \
-    -DCMAKE_INSTALL_PREFIX=/usr \
-    -DOBS_MULTIARCH_SUFFIX="$LIBDIRSUFFIX" \
-    -DUNIX_STRUCTURE=ON \
-    -DUSE_SSL=ON \
-    -DCMAKE_BUILD_TYPE=Release ..
-  make || exit 1
-  make install DESTDIR=$PKG || exit 1
-cd ..
+make \
+  PREFIX=/usr \
+  LIB_DIR="/usr/lib${LIBDIRSUFFIX}" \
+  USE_LATEST=1 \
+  USE_INOTIFY=1 \
+  DOCS_VERSION=1 \
+  DOC_DIR=/usr/doc/$PKGNAME-$VERSION
+  
+make install install_i18n \
+  PREFIX=$PKG/usr \
+  USE_LATEST=1 \
+  USE_INOTIFY=1 \
+  DOCS_VERSION=1 \
+  MAN_DIR=$PKG/usr/man/man1 \
+  PLUGINS_DIR="${PKG}/usr/lib${LIBDIRSUFFIX}/${PKGNAME}/plugins" \
+  DOC_DIR=$PKG/usr/doc/$PKGNAME-$VERSION || exit 1
+
+# Make sure a menu entry icon is displayed
+for i in 24 32 48 ; do
+  mkdir -p $PKG/usr/share/icons/hicolor/${i}x${i}/apps
+  ( cd $PKG/usr/share/icons/hicolor/${i}x${i}/apps
+    ln -s ../../../../pixmaps/emelfm2/emelfm2_${i}.png emelfm2.png
+  )
+done
 
 # Strip binaries and shared objects, if present
 ( cd $PKG
@@ -145,14 +137,6 @@ if [ -x $CWD/patches ];then
    chmod 644 $PKG/usr/doc/$PKGNAME-$VERSION/SlackBuild/patches/*
 fi
 
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "[\033[01;32m  Building some post-install execution script  \033[01;37m] "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-echo ""
-sleep 2
-
 # Building some post-install execution script 	
 	echo "if [ -x /usr/bin/update-desktop-database ]; then
   /usr/bin/update-desktop-database &> /dev/null
@@ -176,13 +160,6 @@ cd $PKG
 if [ -x /usr/bin/requiredbuilder ];then
    requiredbuilder -y -v -b -s  $CWD $PKG
 fi
-
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "[\033[01;32m  Create txz package  \033[01;37m] "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-sleep 2
 
 # Create txz package
 ROOTCOMMANDS="set -o errexit -o xtrace ; cd ${PKG} ;

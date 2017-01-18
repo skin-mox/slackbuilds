@@ -1,13 +1,13 @@
 #!/bin/sh
 # Heavily based on the Slackware 14.2 SlackBuild
 #
-# Created by: Christoph Willing <chris.willing@linux.com>
-#
+# 
+# Created by: Skin Mox <skin-mox@bol.com.br>
 #
 # 
 # 
-# Modified by: Skin Mox <skin-mox@bol.com.br>
-#  
+# 
+# 
 #
 # Redistribution and use of this script, with or without modification, is
 # permitted provided that the following conditions are met:
@@ -28,31 +28,29 @@
 # 
 #
 #
-# Official Site: https://obsproject.com/
+# Official Site: http://semiletov.org/eko/
 #
 
 # Set variables:
 CWD=`pwd`
 OUTPUT=${OUTPUT:-$CWD}
-PKGNAME=obs-studio
+PKGNAME=eko
 TMP=${TMP:-/tmp/txz/$PKGNAME}
 PKG=$TMP/package
-VERSION=${VERSION:-17.0.1}
+VERSION=${VERSION:-5.3.0}
 ARCH=${ARCH:-$(uname -m)}
 JOBS=${JOBS:--j5}
 BUILD=${BUILD:-1}
 TAG=${TAG:-sm}
-SUFFIX=${SUFFIX:-tar.gz}
 
-SOURCE="https://github.com/jp9000/${PKGNAME}/archive/${VERSION}.${SUFFIX}"
-FILE=${PKGNAME}-${VERSION}.${SUFFIX}
+SOURCE="http://semiletov.org/$PKGNAME/dloads/$PKGNAME-$VERSION.tar.bz2"
 
 TAR=${TAR:-$(basename $SOURCE)}
+DIR=${DIR:-$(echo "$TAR"|sed -r 's/(\.tar|)(.gz|.bz2|.xz|.tgz|)$//')}
 
 # Download source tarball if still not present
-if [ ! -e $CWD/$FILE ]; then
+if [ ! -e $CWD/$TAR ]; then
    wget -c $SOURCE -O "$CWD/$TAR" || exit 1
-   mv $TAR $FILE
 fi
 
 # Set compiling FLAGS
@@ -77,46 +75,24 @@ fi
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT 
 
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "[\033[01;32m  Decompress the source tarball  \033[01;37m] "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-sleep 2
-
 # Decompress the source tarball
 cd $TMP
-tar xvf $CWD/$FILE || exit 1
-cd $PKGNAME-$VERSION || exit 1
+tar xvf $CWD/$TAR || exit 1
+cd $DIR || exit 1
 
 echo -e "\E[0;32m#####                              \E[0;0m"
 echo -e "\E[0;32m+++++ Start SlackBuild $PKGNAME    \E[0;0m"
 echo -e "\E[0;32m#####                              \E[0;0m"
 
-# Apply some patches
-#patch -p1 < $CWD/patches/Makefile.patch --verbose || exit 1
-
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "[\033[01;32m  Building  package  \033[01;37m] "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-sleep 2
-
 # Building  package
-mkdir -p build
-cd build
-  cmake \
-    -DCMAKE_C_FLAGS:STRING="$SLKCFLAGS" \
-    -DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS" \
-    -DCMAKE_INSTALL_PREFIX=/usr \
-    -DOBS_MULTIARCH_SUFFIX="$LIBDIRSUFFIX" \
-    -DUNIX_STRUCTURE=ON \
-    -DUSE_SSL=ON \
-    -DCMAKE_BUILD_TYPE=Release ..
-  make || exit 1
-  make install DESTDIR=$PKG || exit 1
-cd ..
+
+qmake-qt5 \
+  PREFIX=/usr \
+  QMAKE_CFLAGS="$SLKCFLAGS" \
+  QMAKE_CXXFLAGS="$SLKCFLAGS" || exit 1
+		
+make $JOBS 2>&1 | tee build.log || exit 1
+make install INSTALL_ROOT=$PKG || exit 1
 
 # Strip binaries and shared objects, if present
 ( cd $PKG
@@ -124,6 +100,22 @@ cd ..
   find . | xargs file | grep "shared object" | grep ELF | cut -f 1 -d : | xargs -r strip --strip-unneeded 2> /dev/null || true
   find . | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs -r strip --strip-unneeded 2> /dev/null || true
 )
+
+# Add desktopy entry
+mkdir -p ${PKG}/usr/share/pixmaps
+cp $CWD/eko.png ${PKG}/usr/share/pixmaps || exit 1
+mkdir -p ${PKG}/usr/share/applications
+cat > ${PKG}/usr/share/applications/${PKGNAME}.desktop <<EOF
+[Desktop Entry]
+Name=${PKGNAME}
+Comment=EKO is a simple sound editor. 
+GenericName=EKO Sound Editor
+Exec=eko
+Icon=eko
+Terminal=false
+Type=Application
+Categories=AudioVideo;Audio;AudioVideoEditing;
+EOF
 
 # Also add the slack-desk file to the package
 mkdir -p $PKG/install
@@ -144,14 +136,6 @@ if [ -x $CWD/patches ];then
    cp $CWD/patches/*  $PKG/usr/doc/$PKGNAME-$VERSION/SlackBuild/patches
    chmod 644 $PKG/usr/doc/$PKGNAME-$VERSION/SlackBuild/patches/*
 fi
-
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "[\033[01;32m  Building some post-install execution script  \033[01;37m] "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-echo ""
-sleep 2
 
 # Building some post-install execution script 	
 	echo "if [ -x /usr/bin/update-desktop-database ]; then
@@ -176,13 +160,6 @@ cd $PKG
 if [ -x /usr/bin/requiredbuilder ];then
    requiredbuilder -y -v -b -s  $CWD $PKG
 fi
-
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "[\033[01;32m  Create txz package  \033[01;37m] "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-sleep 2
 
 # Create txz package
 ROOTCOMMANDS="set -o errexit -o xtrace ; cd ${PKG} ;

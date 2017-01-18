@@ -1,0 +1,11 @@
+--- src/qwinff.pro.orig	2012-08-17 09:56:25.000000000 +0800
++++ src/qwinff.pro	2012-08-17 10:46:41.467675815 +0800
+@@ -90,7 +90,7 @@ unix {
+             services/notificationservice-libnotify.cpp
+         # pkgconfig
+         CONFIG += link_pkgconfig
+-        PKGCONFIG = libnotify
++        PKGCONFIG = libnotify gtk+-2.0
+         DEFINES += USE_LIBNOTIFY
+     }
+     # Shutdown

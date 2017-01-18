@@ -1,0 +1,14 @@
+--- Makefile.orig	2015-08-22 04:09:21.000000000 +0300
++++ Makefile	2015-09-27 21:56:10.690030838 +0300
+@@ -28,7 +28,10 @@
+             MOC_DIR=$(BUILD_DIR)/moc \
+             RCC_DIR=$(BUILD_DIR)/rcc \
+             UI_DIR=$(BUILD_DIR)/ui \
+-            DEFINES+=QT_NO_DEBUG_OUTPUT
++            DEFINES+=QT_NO_DEBUG_OUTPUT \
++            QMAKE_CFLAGS+="$(QMAKE_CFLAGS)" \
++            QMAKE_CXXFLAGS+="$(QMAKE_CXXFLAGS)" \
++            QMAKE_LFLAGS+="$(QMAKE_LFLAGS)"
+ 
+ DEFS= DATA_PATH=\\\"$(DATA_PATH)\\\" \
+       VERSION_ID_STRING=\\\"$(VIDSTR)\\\"

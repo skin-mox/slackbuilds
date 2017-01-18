@@ -1,0 +1,29 @@
+Description: fix the Qt5 lrelease call in Debian.
+Author: Joao Eriberto Mota Filho <eriberto@debian.org>
+Last-Update: 2016-10-29
+Index: vokoscreen-2.5.0/vokoscreen.pro
+===================================================================
+--- vokoscreen-2.5.0.orig/vokoscreen.pro
++++ vokoscreen-2.5.0/vokoscreen.pro
+@@ -16,7 +16,7 @@ FORMS += vokoscreen.ui
+ # Um der Fehlermeldung entgegenzuwirken das keine *.qm Dateien vorhanden sind wird lrelease als Systemaufruf vorher aufgerufen.
+ # Das Script/Macro siehe weiter unten "# language packages" muß weiter bestehen bleiben damit "make clean" die *.qm Dateien löscht.
+ 
+-system(lrelease-qt5 language/vokoscreen_*.ts)
++system(lrelease language/vokoscreen_*.ts)
+ 
+ RESOURCES += screencast.qrc
+                         
+@@ -27,10 +27,10 @@ TRANSLATIONS = $$files(language/vokoscre
+ !isEmpty(TRANSLATIONS) {
+   isEmpty(QMAKE_LRELEASE) {
+     win32: QMAKE_LRELEASE = $$[QT_INSTALL_BINS]\lrelease.exe
+-      else: QMAKE_LRELEASE = $$[QT_INSTALL_BINS]/lrelease-qt5
++      else: QMAKE_LRELEASE = $$[QT_INSTALL_BINS]/lrelease
+   }
+   isEmpty(TS_DIR):TS_DIR = language
+-  TSQM.name = lrelease-qt5 ${QMAKE_FILE_IN}
++  TSQM.name = lrelease ${QMAKE_FILE_IN}
+   TSQM.input = TRANSLATIONS
+   TSQM.output = $$TS_DIR/${QMAKE_FILE_BASE}.qm
+   TSQM.commands = $$QMAKE_LRELEASE ${QMAKE_FILE_IN}

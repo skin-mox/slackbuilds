@@ -1,0 +1,14 @@
+Description: Validate .desktop file against current Freedesktop standards.
+Author: Luca Falavigna <dktrkranz@debian.org>
+
+Index: oggconvert-0.3.3/data/oggconvert.desktop
+===================================================================
+--- oggconvert-0.3.3.orig/data/oggconvert.desktop	2010-05-24 20:11.35.536963832 +0100
++++ oggconvert-0.3.3/data/oggconvert.desktop	2010-05-24 20:11.35.536963832 +0100
+@@ -1,6 +1,5 @@
+ [Desktop Entry]
+ Version=1.0
+-Encoding=UTF-8
+ Name=OggConvert
+ Comment=Convert media files to Free formats
+ Type=Application

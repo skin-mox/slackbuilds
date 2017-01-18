@@ -1,0 +1,1308 @@
+make  all-recursive
+make[1]: Entering directory '/tmp/txz/cinelerra/cinelerra-cv'
+Making all in libmpeg3
+make[2]: Entering directory '/tmp/txz/cinelerra/cinelerra-cv/libmpeg3'
+Making all in audio
+make[3]: Entering directory '/tmp/txz/cinelerra/cinelerra-cv/libmpeg3/audio'
+  CC       ac3.lo
+  CC       dct.lo
+  CC       huffman.lo
+  CC       layer2.lo
+  CC       layer3.lo
+  CC       mpeg3audio.lo
+ac3.c: In function ‘mpeg3_ac3_header’:
+ac3.c:95:12: warning: format ‘%p’ expects argument of type ‘void *’, but argument 2 has type ‘int’ [-Wformat=]
+     printf("mpeg3_ac3_header: unknown channel code: %p\n", audio->flags & A52_CHANNEL_MASK);
+            ^
+layer2.c: In function ‘mpeg3audio_dolayer2’:
+layer2.c:392:2: warning: implicit declaration of function ‘mpeg3bits_use_ptr’ [-Wimplicit-function-declaration]
+  mpeg3bits_use_ptr(audio->stream, frame);
+  ^
+layer2.c:419:12: warning: implicit declaration of function ‘mpeg3audio_synth_stereo’ [-Wimplicit-function-declaration]
+            mpeg3audio_synth_stereo(audio, 
+            ^
+layer3.c: In function ‘dequantize_sample’:
+layer3.c:246:12: warning: implicit declaration of function ‘mpeg3bits_getbitoffset’ [-Wimplicit-function-declaration]
+  int num = mpeg3bits_getbitoffset(audio->stream);
+            ^
+layer3.c:673:2: warning: implicit declaration of function ‘mpeg3bits_start_reverse’ [-Wimplicit-function-declaration]
+  mpeg3bits_start_reverse(audio->stream);
+  ^
+layer3.c:675:2: warning: implicit declaration of function ‘mpeg3bits_start_forward’ [-Wimplicit-function-declaration]
+  mpeg3bits_start_forward(audio->stream);
+  ^
+layer3.c: In function ‘hybrid’:
+layer3.c:829:6: warning: implicit declaration of function ‘mpeg3audio_dct36’ [-Wimplicit-function-declaration]
+      mpeg3audio_dct36(fsIn[0], rawout1, rawout2, mpeg3_win[0], tspnt);
+      ^
+layer3.c:841:7: warning: implicit declaration of function ‘mpeg3audio_dct12’ [-Wimplicit-function-declaration]
+       mpeg3audio_dct12(fsIn[sb]  ,rawout1   ,rawout2   ,mpeg3_win[2] ,tspnt);
+       ^
+layer3.c: In function ‘mpeg3audio_dolayer3’:
+layer3.c:1111:3: warning: implicit declaration of function ‘mpeg3bits_use_ptr’ [-Wimplicit-function-declaration]
+   mpeg3bits_use_ptr(audio->stream, audio->bsbuf);
+   ^
+layer3.c:1300:7: warning: implicit declaration of function ‘mpeg3audio_synth_stereo’ [-Wimplicit-function-declaration]
+       mpeg3audio_synth_stereo(audio, 
+       ^
+layer3.c: In function ‘mpeg3_layer_reset’:
+layer3.c:1355:2: warning: implicit declaration of function ‘mpeg3audio_reset_synths’ [-Wimplicit-function-declaration]
+  mpeg3audio_reset_synths(audio);
+  ^
+  CC       pcm.lo
+  CC       synthesizers.lo
+  CC       tables.lo
+synthesizers.c: In function ‘mpeg3audio_synth_stereo’:
+synthesizers.c:36:6: warning: implicit declaration of function ‘mpeg3audio_dct64’ [-Wimplicit-function-declaration]
+      mpeg3audio_dct64(buf[1] + ((audio->bo + 1) & 0xf), buf[0] + audio->bo, bandPtr);
+      ^
+  CCLD     libmpeg3_audio.la
+make[3]: Leaving directory '/tmp/txz/cinelerra/cinelerra-cv/libmpeg3/audio'
+Making all in video
+make[3]: Entering directory '/tmp/txz/cinelerra/cinelerra-cv/libmpeg3/video'
+  CC       getpicture.lo
+  CC       idct.lo
+  CC       headers.lo
+  CC       macroblocks.lo
+  CC       mmxtest.lo
+getpicture.c: In function ‘mpeg3video_get_macroblocks’:
+getpicture.c:534:4: warning: implicit declaration of function ‘mpeg3_new_slice_buffer’ [-Wimplicit-function-declaration]
+    mpeg3_new_slice_buffer(&(video->slice_buffers[video->slice_buffers_initialized++]));
+    ^
+getpicture.c:546:5: warning: implicit declaration of function ‘mpeg3_expand_slice_buffer’ [-Wimplicit-function-declaration]
+     mpeg3_expand_slice_buffer(slice_buffer);
+     ^
+getpicture.c: In function ‘mpeg3video_allocate_decoders’:
+getpicture.c:625:4: warning: implicit declaration of function ‘mpeg3_delete_slice_decoder’ [-Wimplicit-function-declaration]
+    mpeg3_delete_slice_decoder(&(video->slice_decoders[i]));
+    ^
+getpicture.c:630:4: warning: implicit declaration of function ‘mpeg3_new_slice_decoder’ [-Wimplicit-function-declaration]
+    mpeg3_new_slice_decoder(video, &(video->slice_decoders[i]));
+    ^
+getpicture.c: In function ‘mpeg3video_getpicture’:
+getpicture.c:721:4: warning: implicit declaration of function ‘mpeg3video_display_second_field’ [-Wimplicit-function-declaration]
+    mpeg3video_display_second_field(video);
+    ^
+headers.c: In function ‘mpeg3video_ext_user_data’:
+headers.c:328:15: warning: implicit declaration of function ‘mpeg3bits_next_startcode’ [-Wimplicit-function-declaration]
+    int code = mpeg3bits_next_startcode(video->vstream);
+               ^
+headers.c:334:6: warning: implicit declaration of function ‘mpeg3bits_refill’ [-Wimplicit-function-declaration]
+      mpeg3bits_refill(video->vstream);
+      ^
+  CC       motion.lo
+  CC       mpeg3cache.lo
+  CC       mpeg3video.lo
+  CC       output.lo
+  CC       reconstruct.lo
+  CC       seek.lo
+  CC       slice.lo
+mpeg3video.c: In function ‘mpeg3video_allocate_struct’:
+mpeg3video.c:228:2: warning: implicit declaration of function ‘mpeg3video_init_output’ [-Wimplicit-function-declaration]
+  mpeg3video_init_output();
+  ^
+mpeg3video.c: In function ‘mpeg3video_delete_struct’:
+mpeg3video.c:251:4: warning: implicit declaration of function ‘mpeg3_delete_slice_decoder’ [-Wimplicit-function-declaration]
+    mpeg3_delete_slice_decoder(&(video->slice_decoders[i]));
+    ^
+mpeg3video.c:254:3: warning: implicit declaration of function ‘mpeg3_delete_slice_buffer’ [-Wimplicit-function-declaration]
+   mpeg3_delete_slice_buffer(&(video->slice_buffers[i]));
+   ^
+mpeg3video.c: In function ‘mpeg3video_read_frame_backend’:
+mpeg3video.c:276:24: warning: implicit declaration of function ‘mpeg3video_get_header’ [-Wimplicit-function-declaration]
+   if(!result) result = mpeg3video_get_header(video, 0);
+                        ^
+mpeg3video.c:285:13: warning: implicit declaration of function ‘mpeg3video_getpicture’ [-Wimplicit-function-declaration]
+    result = mpeg3video_getpicture(video, video->framenum);
+             ^
+mpeg3video.c: In function ‘mpeg3video_new’:
+mpeg3video.c:414:27: warning: implicit declaration of function ‘mpeg3video_getgophdr’ [-Wimplicit-function-declaration]
+      if(!result) result = mpeg3video_getgophdr(video);
+                           ^
+mpeg3video.c: In function ‘mpeg3video_read_frame’:
+mpeg3video.c:636:28: warning: implicit declaration of function ‘mpeg3video_present_frame’ [-Wimplicit-function-declaration]
+   if(video->output_src[0]) mpeg3video_present_frame(video);
+                            ^
+mpeg3video.c:656:25: warning: implicit declaration of function ‘mpeg3video_seek’ [-Wimplicit-function-declaration]
+    if(!result) result = mpeg3video_seek(video);
+                         ^
+reconstruct.c: In function ‘mpeg3video_reconstruct’:
+reconstruct.c:583:11: warning: implicit declaration of function ‘mpeg3video_calc_dmv’ [-Wimplicit-function-declaration]
+           mpeg3video_calc_dmv(video, 
+           ^
+slice.c: In function ‘mpeg3_decode_slice’:
+slice.c:197:26: warning: implicit declaration of function ‘mpeg3video_getslicehdr’ [-Wimplicit-function-declaration]
+     slice_vert_pos_ext = mpeg3video_getslicehdr(slice, video);
+                          ^
+slice.c:213:17: warning: implicit declaration of function ‘mpeg3video_get_macroblock_address’ [-Wimplicit-function-declaration]
+       mba_inc = mpeg3video_get_macroblock_address(slice);
+                 ^
+slice.c:238:4: warning: implicit declaration of function ‘mpeg3video_macroblock_modes’ [-Wimplicit-function-declaration]
+    mpeg3video_macroblock_modes(slice, 
+    ^
+slice.c:273:12: warning: implicit declaration of function ‘mpeg3video_motion_vectors’ [-Wimplicit-function-declaration]
+            mpeg3video_motion_vectors(slice, 
+            ^
+slice.c:286:14: warning: implicit declaration of function ‘mpeg3video_motion_vector’ [-Wimplicit-function-declaration]
+              mpeg3video_motion_vector(slice, 
+              ^
+slice.c:335:17: warning: implicit declaration of function ‘mpeg3video_get_cbp’ [-Wimplicit-function-declaration]
+           cbp = mpeg3video_get_cbp(slice);
+                 ^
+slice.c:353:9: warning: implicit declaration of function ‘mpeg3video_clearblock’ [-Wimplicit-function-declaration]
+         mpeg3video_clearblock(slice, 0, video->blk_cnt);
+         ^
+slice.c:361:8: warning: implicit declaration of function ‘mpeg3video_getmpg2intrablock’ [-Wimplicit-function-declaration]
+        mpeg3video_getmpg2intrablock(slice, video, comp, dc_dct_pred);
+        ^
+slice.c:363:8: warning: implicit declaration of function ‘mpeg3video_getintrablock’ [-Wimplicit-function-declaration]
+        mpeg3video_getintrablock(slice, video, comp, dc_dct_pred);
+        ^
+slice.c:368:10: warning: implicit declaration of function ‘mpeg3video_getmpg2interblock’ [-Wimplicit-function-declaration]
+          mpeg3video_getmpg2interblock(slice, video, comp);
+          ^
+slice.c:370:10: warning: implicit declaration of function ‘mpeg3video_getinterblock’ [-Wimplicit-function-declaration]
+          mpeg3video_getinterblock(slice, video, comp);
+          ^
+slice.c:452:9: warning: implicit declaration of function ‘mpeg3video_reconstruct’ [-Wimplicit-function-declaration]
+         mpeg3video_reconstruct(video, 
+         ^
+slice.c:467:11: warning: implicit declaration of function ‘mpeg3video_idct_conversion’ [-Wimplicit-function-declaration]
+           mpeg3video_idct_conversion(slice->block[comp]);
+           ^
+seek.c: In function ‘mpeg3video_drop_frames’:
+seek.c:28:13: warning: implicit declaration of function ‘mpeg3video_read_frame_backend’ [-Wimplicit-function-declaration]
+    result = mpeg3video_read_frame_backend(video, 0);
+             ^
+seek.c: In function ‘mpeg3bits_next_startcode’:
+seek.c:54:2: warning: implicit declaration of function ‘mpeg3bits_byte_align’ [-Wimplicit-function-declaration]
+  mpeg3bits_byte_align(stream);
+  ^
+seek.c: In function ‘mpeg3video_seek’:
+seek.c:348:8: warning: implicit declaration of function ‘mpeg3video_get_firstframe’ [-Wimplicit-function-declaration]
+        mpeg3video_get_firstframe(video);
+        ^
+  CC       subtitle.lo
+  CC       vlc.lo
+subtitle.c: In function ‘mpeg3_decode_subtitle’:
+subtitle.c:366:17: warning: implicit declaration of function ‘mpeg3_subtitle_tracks’ [-Wimplicit-function-declaration]
+  for(i = 0; i < mpeg3_subtitle_tracks(file); i++)
+                 ^
+  CCLD     libmpeg3_video.la
+make[3]: Leaving directory '/tmp/txz/cinelerra/cinelerra-cv/libmpeg3/video'
+make[3]: Entering directory '/tmp/txz/cinelerra/cinelerra-cv/libmpeg3'
+  CC       bitstream.lo
+  CC       libmpeg3.lo
+  CC       mpeg3atrack.lo
+  CC       mpeg3css.lo
+  CC       mpeg3demux.lo
+mpeg3demux.c: In function ‘get_transport_pes_packet’:
+mpeg3demux.c:293:11: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 2 has type ‘int64_t {aka long int}’ [-Wformat=]
+    printf("get_transport_pes_packet: offset=%llx 0x%x bytes AC3 custom_id=0x%x astream=0x%x do_audio=%d\n", 
+           ^
+mpeg3demux.c: In function ‘get_payload’:
+mpeg3demux.c:452:12: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 2 has type ‘int64_t {aka long int}’ [-Wformat=]
+     printf("get_payload: offset=%llx 0x%x bytes AC3 pid=0x%x\n", 
+            ^
+mpeg3demux.c: In function ‘read_transport’:
+libmpeg3.c: In function ‘mpeg3_get_file_type’:
+mpeg3demux.c:601:10: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 2 has type ‘int64_t {aka long int}’ [-Wformat=]
+   printf("offset=0x%llx pid=0x%02x continuity=0x%02x padding=%d adaptation=%d unit_start=%d\n", 
+          ^
+libmpeg3.c:315:7: warning: implicit declaration of function ‘mpeg3_read_ifo’ [-Wimplicit-function-declaration]
+    if(mpeg3_read_ifo(file, 0))
+       ^
+libmpeg3.c: In function ‘mpeg3_open_copy’:
+libmpeg3.c:452:3: warning: implicit declaration of function ‘mpeg3demux_copy_titles’ [-Wimplicit-function-declaration]
+   mpeg3demux_copy_titles(file->demuxer, mpeg3_get_demuxer(old_file));
+   ^
+libmpeg3.c:464:3: warning: implicit declaration of function ‘mpeg3_create_title’ [-Wimplicit-function-declaration]
+   mpeg3_create_title(file->demuxer, 0);
+   ^
+mpeg3demux.c: In function ‘handle_scrambling’:
+mpeg3demux.c:771:6: warning: implicit declaration of function ‘mpeg3_decrypt_packet’ [-Wimplicit-function-declaration]
+   if(mpeg3_decrypt_packet(title->fs->css, 
+      ^
+libmpeg3.c: In function ‘mpeg3_set_cpus’:
+libmpeg3.c:563:3: warning: implicit declaration of function ‘mpeg3video_set_cpus’ [-Wimplicit-function-declaration]
+   mpeg3video_set_cpus(file->vtrack[i]->video, cpus);
+   ^
+libmpeg3.c: In function ‘mpeg3_set_sample’:
+libmpeg3.c:609:3: warning: implicit declaration of function ‘mpeg3audio_seek_sample’ [-Wimplicit-function-declaration]
+   mpeg3audio_seek_sample(file->atrack[stream]->audio, sample);
+   ^
+libmpeg3.c: In function ‘mpeg3_set_frame’:
+libmpeg3.c:704:3: warning: implicit declaration of function ‘mpeg3video_seek_frame’ [-Wimplicit-function-declaration]
+   mpeg3video_seek_frame(file->vtrack[stream]->video, frame);
+   ^
+mpeg3atrack.c: In function ‘mpeg3_new_atrack’:
+libmpeg3.c: In function ‘mpeg3_seek_byte’:
+libmpeg3.c:718:3: warning: implicit declaration of function ‘mpeg3video_seek_byte’ [-Wimplicit-function-declaration]
+   mpeg3video_seek_byte(file->vtrack[i]->video, byte);
+   ^
+libmpeg3.c:724:3: warning: implicit declaration of function ‘mpeg3audio_seek_byte’ [-Wimplicit-function-declaration]
+   mpeg3audio_seek_byte(file->atrack[i]->audio, byte);
+   ^
+mpeg3atrack.c:22:3: warning: implicit declaration of function ‘mpeg3demux_copy_titles’ [-Wimplicit-function-declaration]
+   mpeg3demux_copy_titles(new_atrack->demuxer, demuxer);
+   ^
+libmpeg3.c: In function ‘mpeg3_previous_frame’:
+libmpeg3.c:748:10: warning: implicit declaration of function ‘mpeg3video_previous_frame’ [-Wimplicit-function-declaration]
+   return mpeg3video_previous_frame(file->vtrack[stream]->video);
+          ^
+mpeg3demux.c: In function ‘get_program_pes_packet’:
+mpeg3demux.c:1219:13: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 2 has type ‘int64_t {aka long int}’ [-Wformat=]
+      printf(" MP2 audio data offset=%llx custom_id=%x size=%x\n", 
+             ^
+mpeg3demux.c:1260:13: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 2 has type ‘int64_t {aka long int}’ [-Wformat=]
+      printf(" video offset=%llx custom_id=%x size=%x\n", 
+             ^
+libmpeg3.c: In function ‘mpeg3_colormodel’:
+libmpeg3.c:849:10: warning: implicit declaration of function ‘mpeg3video_colormodel’ [-Wimplicit-function-declaration]
+   return mpeg3video_colormodel(file->vtrack[stream]->video);
+          ^
+libmpeg3.c: In function ‘mpeg3_read_yuvframe’:
+libmpeg3.c:914:12: warning: implicit declaration of function ‘mpeg3video_read_yuvframe’ [-Wimplicit-function-declaration]
+   result = mpeg3video_read_yuvframe(file->vtrack[stream]->video, 
+            ^
+libmpeg3.c: In function ‘mpeg3_read_yuvframe_ptr’:
+libmpeg3.c:940:12: warning: implicit declaration of function ‘mpeg3video_read_yuvframe_ptr’ [-Wimplicit-function-declaration]
+   result = mpeg3video_read_yuvframe_ptr(file->vtrack[stream]->video, 
+            ^
+libmpeg3.c: In function ‘mpeg3_read_audio_chunk’:
+libmpeg3.c:1008:12: warning: implicit declaration of function ‘mpeg3audio_read_raw’ [-Wimplicit-function-declaration]
+   result = mpeg3audio_read_raw(file->atrack[stream]->audio, 
+            ^
+libmpeg3.c: In function ‘mpeg3_read_video_chunk’:
+libmpeg3.c:1027:12: warning: implicit declaration of function ‘mpeg3video_read_raw’ [-Wimplicit-function-declaration]
+   result = mpeg3video_read_raw(file->vtrack[stream]->video, 
+            ^
+mpeg3demux.c: In function ‘mpeg3_read_prev_packet’:
+mpeg3demux.c:1906:8: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 4 has type ‘int64_t {aka long int}’ [-Wformat=]
+ printf("mpeg3_read_prev_packet 1 result=%d title=%d tell=%llx program_byte=%llx\n", result, demuxer->current_title, mpeg3io_tell(title->fs), demuxer->program_byte);
+        ^
+mpeg3demux.c:1906:8: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 5 has type ‘int64_t {aka long int}’ [-Wformat=]
+mpeg3demux.c:1909:8: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 4 has type ‘int64_t {aka long int}’ [-Wformat=]
+ printf("mpeg3_read_prev_packet 100 result=%d title=%d tell=%llx program_byte=%llx\n", result, demuxer->current_title, mpeg3io_tell(title->fs), demuxer->program_byte);
+        ^
+mpeg3demux.c:1909:8: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 5 has type ‘int64_t {aka long int}’ [-Wformat=]
+mpeg3demux.c: In function ‘mpeg3demux_copy_titles’:
+mpeg3demux.c:2115:3: warning: implicit declaration of function ‘mpeg3_copy_title’ [-Wimplicit-function-declaration]
+   mpeg3_copy_title(dst_title, src_title);
+   ^
+mpeg3demux.c: In function ‘mpeg3_delete_demuxer’:
+mpeg3demux.c:2173:3: warning: implicit declaration of function ‘mpeg3_delete_title’ [-Wimplicit-function-declaration]
+   mpeg3_delete_title(demuxer->titles[i]);
+   ^
+  CC       mpeg3ifo.lo
+  CC       mpeg3io.lo
+  CC       mpeg3strack.lo
+mpeg3ifo.c: In function ‘get_ifo_playlist’:
+mpeg3ifo.c:356:2: warning: implicit declaration of function ‘mpeg3io_complete_path’ [-Wimplicit-function-declaration]
+  mpeg3io_complete_path(complete_path, file->fs->path);
+  ^
+mpeg3ifo.c:357:2: warning: implicit declaration of function ‘mpeg3io_get_directory’ [-Wimplicit-function-declaration]
+  mpeg3io_get_directory(directory, complete_path);
+  ^
+mpeg3ifo.c:358:2: warning: implicit declaration of function ‘mpeg3io_get_filename’ [-Wimplicit-function-declaration]
+  mpeg3io_get_filename(filename, complete_path);
+  ^
+mpeg3ifo.c:374:6: warning: implicit declaration of function ‘mpeg3io_joinpath’ [-Wimplicit-function-declaration]
+      mpeg3io_joinpath(title_path, directory, new_filename->d_name);
+      ^
+mpeg3ifo.c: In function ‘cellplayinfo’:
+mpeg3ifo.c:537:40: warning: passing argument 3 of ‘program_map’ from incompatible pointer type [-Wincompatible-pointer-types]
+   if(program_map(file, cell_hdr_start, &cell_hdr))
+                                        ^
+mpeg3ifo.c:261:12: note: expected ‘unsigned char **’ but argument is of type ‘char **’
+ static int program_map(mpeg3_t *file, char *pgc, unsigned char **ptr)
+            ^
+mpeg3ifo.c: In function ‘finaltable’:
+mpeg3ifo.c:696:10: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 4 has type ‘long int’ [-Wformat=]
+   printf(" vob id: %x cell id: %x start: %llx end: %llx program: %x\n", 
+          ^
+mpeg3ifo.c:696:10: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 5 has type ‘long int’ [-Wformat=]
+mpeg3ifo.c: In function ‘mpeg3_read_ifo’:
+mpeg3ifo.c:811:6: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 5 has type ‘int64_t {aka long int}’ [-Wformat=]
+      "read_ifo: cell length and title length don't match! title=%d cell=%d cell_start=%llx cell_end=%llx.\n",
+      ^
+mpeg3ifo.c:811:6: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 6 has type ‘int64_t {aka long int}’ [-Wformat=]
+mpeg3io.c: In function ‘mpeg3_delete_fs’:
+mpeg3io.c:23:2: warning: implicit declaration of function ‘mpeg3_delete_css’ [-Wimplicit-function-declaration]
+  mpeg3_delete_css(fs->css);
+  ^
+mpeg3io.c: In function ‘mpeg3io_open_file’:
+mpeg3io.c:61:2: warning: implicit declaration of function ‘mpeg3_get_keys’ [-Wimplicit-function-declaration]
+  mpeg3_get_keys(fs->css, fs->path);
+  ^
+mpeg3io.c: In function ‘mpeg3io_complete_path’:
+mpeg3io.c:210:3: warning: implicit declaration of function ‘getcwd’ [-Wimplicit-function-declaration]
+   getcwd(current_dir, MPEG3_STRLEN);
+   ^
+  CC       mpeg3title.lo
+  CC       mpeg3tocutil.lo
+  CC       mpeg3vtrack.lo
+mpeg3title.c: In function ‘mpeg3_copy_title’:
+mpeg3title.c:33:2: warning: implicit declaration of function ‘mpeg3_copy_fs’ [-Wimplicit-function-declaration]
+  mpeg3_copy_fs(dst->fs, src->fs);
+  ^
+mpeg3title.c: In function ‘mpeg3_dump_title’:
+mpeg3title.c:56:9: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 3 has type ‘int64_t {aka long int}’ [-Wformat=]
+  printf("mpeg3_dump_title path %s %llx-%llx cell_table_size %d\n", 
+         ^
+mpeg3title.c:56:9: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 4 has type ‘int64_t {aka long int}’ [-Wformat=]
+mpeg3title.c:63:10: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 2 has type ‘int64_t {aka long int}’ [-Wformat=]
+   printf("%llx-%llx %llx-%llx %x\n", 
+          ^
+mpeg3title.c:63:10: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 3 has type ‘int64_t {aka long int}’ [-Wformat=]
+mpeg3title.c:63:10: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 4 has type ‘int64_t {aka long int}’ [-Wformat=]
+mpeg3title.c:63:10: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 5 has type ‘int64_t {aka long int}’ [-Wformat=]
+mpeg3title.c: In function ‘mpeg3demux_print_cells’:
+mpeg3title.c:189:20: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 3 has type ‘int64_t {aka long int}’ [-Wformat=]
+    fprintf(output, "REGION: %llx-%llx %llx-%llx %f %f %d\n",
+                    ^
+mpeg3title.c:189:20: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 4 has type ‘int64_t {aka long int}’ [-Wformat=]
+mpeg3title.c:189:20: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 5 has type ‘int64_t {aka long int}’ [-Wformat=]
+mpeg3title.c:189:20: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 6 has type ‘int64_t {aka long int}’ [-Wformat=]
+mpeg3title.c:189:20: warning: format ‘%f’ expects argument of type ‘double’, but argument 7 has type ‘int’ [-Wformat=]
+mpeg3title.c:189:20: warning: format ‘%f’ expects a matching ‘double’ argument [-Wformat=]
+mpeg3title.c:189:20: warning: format ‘%d’ expects a matching ‘int’ argument [-Wformat=]
+  CC       workarounds.lo
+mpeg3tocutil.c: In function ‘mpeg3_read_toc’:
+mpeg3tocutil.c:296:18: warning: format ‘%lld’ expects argument of type ‘long long int’, but argument 4 has type ‘int’ [-Wformat=]
+ if(debug) printf("mpeg3_read_toc 62 %d %d %lld\n", 
+                  ^
+mpeg3tocutil.c: In function ‘handle_video’:
+mpeg3tocutil.c:834:8: warning: implicit declaration of function ‘mpeg3video_get_header’ [-Wimplicit-function-declaration]
+    if(!mpeg3video_get_header(video, 0))
+        ^
+mpeg3vtrack.c: In function ‘mpeg3_new_vtrack’:
+mpeg3vtrack.c:19:3: warning: implicit declaration of function ‘mpeg3demux_copy_titles’ [-Wimplicit-function-declaration]
+   mpeg3demux_copy_titles(new_vtrack->demuxer, demuxer);
+   ^
+  CC       mpeg3dump.o
+  CC       mpeg3toc.o
+mpeg3dump.c: In function ‘main’:
+mpeg3dump.c:111:22: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 3 has type ‘int64_t {aka long int}’ [-Wformat=]
+      fprintf(stderr, "%llx ", file->atrack[i]->sample_offsets[j]);
+                      ^
+mpeg3dump.c:138:22: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 4 has type ‘int64_t {aka long int}’ [-Wformat=]
+      fprintf(stderr, "%d=%llx ", j, file->vtrack[i]->frame_offsets[j]);
+                      ^
+mpeg3dump.c:146:22: warning: format ‘%lld’ expects argument of type ‘long long int’, but argument 3 has type ‘int64_t {aka long int}’ [-Wformat=]
+      fprintf(stderr, "%lld ", file->vtrack[i]->keyframe_numbers[j]);
+                      ^
+mpeg3dump.c:165:13: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 2 has type ‘int64_t {aka long int}’ [-Wformat=]
+      printf("%llx ", strack->offsets[j]);
+             ^
+mpeg3dump.c:175:20: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 4 has type ‘int64_t {aka long int}’ [-Wformat=]
+    fprintf(stderr, "  Title path=%s total_bytes=%llx cell_table_size=%d\n", 
+                    ^
+mpeg3dump.c:183:22: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 3 has type ‘int64_t {aka long int}’ [-Wformat=]
+      fprintf(stderr, "    Cell: %llx-%llx %llx-%llx program=%d\n", 
+                      ^
+mpeg3dump.c:183:22: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 4 has type ‘int64_t {aka long int}’ [-Wformat=]
+mpeg3dump.c:183:22: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 5 has type ‘int64_t {aka long int}’ [-Wformat=]
+mpeg3dump.c:183:22: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 6 has type ‘int64_t {aka long int}’ [-Wformat=]
+  CC       mpeg3cat.o
+mpeg3toc.c: In function ‘main’:
+mpeg3toc.c:93:2: warning: implicit declaration of function ‘gettimeofday’ [-Wimplicit-function-declaration]
+  gettimeofday(&prev_time, 0);
+  ^
+mpeg3toc.c:109:20: warning: format ‘%lld’ expects argument of type ‘long long int’, but argument 3 has type ‘int64_t {aka long int}’ [-Wformat=]
+    fprintf(stderr, "%lld%% ETA: %dm%ds        \r", 
+                    ^
+mpeg3toc.c:109:20: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has type ‘int64_t {aka long int}’ [-Wformat=]
+mpeg3toc.c:109:20: warning: format ‘%d’ expects argument of type ‘int’, but argument 5 has type ‘int64_t {aka long int}’ [-Wformat=]
+mpeg3toc.c:125:19: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘int64_t {aka long int}’ [-Wformat=]
+   fprintf(stderr, "%dm%ds elapsed           \n", 
+                   ^
+mpeg3toc.c:125:19: warning: format ‘%d’ expects argument of type ‘int’, but argument 4 has type ‘int64_t {aka long int}’ [-Wformat=]
+mpeg3cat.c: In function ‘main’:
+mpeg3cat.c:170:4: warning: implicit declaration of function ‘mpeg3bits_refill’ [-Wimplicit-function-declaration]
+    mpeg3bits_refill(in->vtrack[stream]->video->vstream);
+    ^
+mpeg3cat.c:344:10: warning: implicit declaration of function ‘mpeg3_decrypt_packet’ [-Wimplicit-function-declaration]
+       if(mpeg3_decrypt_packet(title->fs->css, 
+          ^
+  CCLD     libmpeg3hv.la
+  CCLD     mpeg3dump
+  CCLD     mpeg3toc
+  CCLD     mpeg3cat
+make[3]: Leaving directory '/tmp/txz/cinelerra/cinelerra-cv/libmpeg3'
+make[2]: Leaving directory '/tmp/txz/cinelerra/cinelerra-cv/libmpeg3'
+Making all in mplexlo
+make[2]: Entering directory '/tmp/txz/cinelerra/cinelerra-cv/mplexlo'
+  CC       mplex.o
+  CCLD     mplexlo
+make[2]: Leaving directory '/tmp/txz/cinelerra/cinelerra-cv/mplexlo'
+Making all in mpeg2enc
+make[2]: Entering directory '/tmp/txz/cinelerra/cinelerra-cv/mpeg2enc'
+  CC       conform.lo
+  CC       mpeg2enc.lo
+  CC       putseq.lo
+  CC       putpic.lo
+  CC       puthdr.lo
+putseq.c: In function ‘putseq’:
+putseq.c:249:4: warning: implicit declaration of function ‘fast_motion_data’ [-Wimplicit-function-declaration]
+    fast_motion_data(cur_picture.curorg[0], cur_picture.pict_struct);
+    ^
+putseq.c:358:3: warning: implicit declaration of function ‘writeframe’ [-Wimplicit-function-declaration]
+   writeframe(f + frame0, cur_picture.curref);
+   ^
+puthdr.c: In function ‘putseqhdr’:
+puthdr.c:47:3: warning: implicit declaration of function ‘mpeg2enc_putbits’ [-Wimplicit-function-declaration]
+   mpeg2enc_putbits(SEQ_START_CODE,32); /* sequence_header_code */
+   ^
+mpeg2enc.c: In function ‘mpeg2enc’:
+mpeg2enc.c:133:2: warning: implicit declaration of function ‘stop_slice_engines’ [-Wimplicit-function-declaration]
+  stop_slice_engines();
+  ^
+mpeg2enc.c:134:2: warning: implicit declaration of function ‘stop_motion_engines’ [-Wimplicit-function-declaration]
+  stop_motion_engines();
+  ^
+mpeg2enc.c:135:4: warning: implicit declaration of function ‘stop_transform_engines’ [-Wimplicit-function-declaration]
+    stop_transform_engines();
+    ^
+mpeg2enc.c:136:4: warning: implicit declaration of function ‘stop_itransform_engines’ [-Wimplicit-function-declaration]
+    stop_itransform_engines();
+    ^
+mpeg2enc.c: In function ‘bufalloc’:
+mpeg2enc.c:205:25: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+  adjust = BUFFER_ALIGN-((int)buf)%BUFFER_ALIGN;
+                         ^
+mpeg2enc.c: In function ‘init’:
+mpeg2enc.c:224:2: warning: implicit declaration of function ‘init_motion’ [-Wimplicit-function-declaration]
+  init_motion();
+  ^
+mpeg2enc.c:225:2: warning: implicit declaration of function ‘init_predict_hv’ [-Wimplicit-function-declaration]
+  init_predict_hv();
+  ^
+mpeg2enc.c:227:2: warning: implicit declaration of function ‘init_transform_hv’ [-Wimplicit-function-declaration]
+  init_transform_hv();
+  ^
+mpeg2enc.c:330:2: warning: implicit declaration of function ‘start_motion_engines’ [-Wimplicit-function-declaration]
+  start_motion_engines();
+  ^
+mpeg2enc.c:332:2: warning: implicit declaration of function ‘start_transform_engines’ [-Wimplicit-function-declaration]
+  start_transform_engines();
+  ^
+mpeg2enc.c:334:2: warning: implicit declaration of function ‘start_itransform_engines’ [-Wimplicit-function-declaration]
+  start_itransform_engines();
+  ^
+mpeg2enc.c:336:2: warning: implicit declaration of function ‘start_slice_engines’ [-Wimplicit-function-declaration]
+  start_slice_engines();
+  ^
+mpeg2enc.c: In function ‘readcmdline’:
+mpeg2enc.c:449:18: warning: zero-length gnu_printf format string [-Wformat-zero-length]
+  sprintf(tplorg, "");
+                  ^
+mpeg2enc.c:450:20: warning: zero-length gnu_printf format string [-Wformat-zero-length]
+  sprintf(out_path, "");
+                    ^
+mpeg2enc.c:497:7: warning: implicit declaration of function ‘isalpha’ [-Wimplicit-function-declaration]
+    if(isalpha(argv[i][j])) isnum = 0;
+       ^
+  CC       putmpg.lo
+mpeg2enc.c:861:10: warning: format ‘%ld’ expects argument of type ‘long int’, but argument 3 has type ‘int’ [-Wformat=]
+   printf("Encoding: %s frames %ld\n", out_path, nframes);
+          ^
+  CC       putvlc.lo
+  CC       putbits.lo
+  CC       predict.lo
+  CC       readpic.lo
+putbits.c: In function ‘slice_testbits’:
+putbits.c:51:9: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 2 has type ‘long int’ [-Wformat=]
+  printf("slice test size %x outcnt %d outbfr %x\n", engine->slice_size, engine->outcnt, engine->outbfr << engine->outcnt);
+         ^
+  CC       writepic.lo
+  CC       transfrm.lo
+  CC       fdctref.lo
+  CC       idct.lo
+  CC       quantize.lo
+  CC       ratectl.lo
+  CC       stats.lo
+  CC       motion.lo
+  CC       cpu_accel.lo
+  CCAS     fdct_mmx.lo
+  CC       fdctdata.lo
+  CCAS     idct_mmx.lo
+\1 better written as $1 at ../admin/nasm line 12.
+nasm -felf fdct_mmx.s -o .libs/fdct_mmx.o
+  CC       idctdata.lo
+  CCAS     quant_mmx.lo
+\1 better written as $1 at ../admin/nasm line 12.
+nasm -felf idct_mmx.s -o .libs/idct_mmx.o
+  CC       quantize_x86.lo
+  CCAS     predict_mmx.lo
+\1 better written as $1 at ../admin/nasm line 12.
+nasm -felf quant_mmx.s -o .libs/quant_mmx.o
+  CCAS     predcomp_mmxe.lo
+\1 better written as $1 at ../admin/nasm line 12.
+nasm -felf predict_mmx.s -o .libs/predict_mmx.o
+  CCAS     predcomp_mmx.lo
+\1 better written as $1 at ../admin/nasm line 12.
+nasm -felf predcomp_mmxe.s -o .libs/predcomp_mmxe.o
+quantize_x86.c: In function ‘quant_non_intra_hv_mmx’:
+quantize_x86.c:403:11: warning: implicit declaration of function ‘quantize_ni_mmx’ [-Wimplicit-function-declaration]
+   flags = quantize_ni_mmx( pdst, psrc, quant_mat, i_quant_mat, 
+           ^
+\1 better written as $1 at ../admin/nasm line 12.
+nasm -felf predcomp_mmx.s -o .libs/predcomp_mmx.o
+  CCLD     libmpeg2enc.la
+make[2]: Leaving directory '/tmp/txz/cinelerra/cinelerra-cv/mpeg2enc'
+Making all in toolame-02l
+make[2]: Entering directory '/tmp/txz/cinelerra/cinelerra-cv/toolame-02l'
+  CC       common.lo
+  CC       encode.lo
+  CC       ieeefloat.lo
+  CC       toolame.lo
+  CC       portableio.lo
+  CC       psycho_n1.lo
+  CC       psycho_0.lo
+  CC       psycho_1.lo
+  CC       psycho_2.lo
+  CC       psycho_3.lo
+  CC       psycho_4.lo
+  CC       fft.lo
+  CC       subband.lo
+  CC       audio_read.lo
+  CC       bitstream.lo
+  CC       mem.lo
+  CC       crc.lo
+audio_read.c: In function ‘read_samples’:
+audio_read.c:44:22: warning: implicit declaration of function ‘toolame_buffer_read’ [-Wimplicit-function-declaration]
+   if((samples_read = toolame_buffer_read((char*)sample_buffer, 
+                      ^
+audio_read.c: In function ‘aiff_check’:
+audio_read.c:447:22: warning: format ‘%d’ expects argument of type ‘int’, but argument 3 has type ‘long unsigned int’ [-Wformat=]
+     fprintf (stderr, "Sound data is not %d bits in \"%s\".\n",
+                      ^
+  CC       tables.lo
+  CC       availbits.lo
+  CC       ath.lo
+  CC       encode_new.lo
+  CCLD     libtoolame.la
+make[2]: Leaving directory '/tmp/txz/cinelerra/cinelerra-cv/toolame-02l'
+Making all in quicktime
+make[2]: Entering directory '/tmp/txz/cinelerra/cinelerra-cv/quicktime'
+Making all in encore50
+make[3]: Entering directory '/tmp/txz/cinelerra/cinelerra-cv/quicktime/encore50'
+  CC       encore.lo
+  CC       bitstream.lo
+  CC       mom_access.lo
+  CC       mom_util.lo
+  CC       mot_code.lo
+  CC       mot_est_comp.lo
+  CC       mot_est_mb.lo
+  CC       mot_util.lo
+  CC       putvlc.lo
+  CC       rate_ctl.lo
+  CC       text_bits.lo
+  CC       text_code.lo
+  CC       text_code_mb.lo
+  CC       text_dct.lo
+  CC       vop_code.lo
+  CCLD     libencore.la
+make[3]: Leaving directory '/tmp/txz/cinelerra/cinelerra-cv/quicktime/encore50'
+make[3]: Entering directory '/tmp/txz/cinelerra/cinelerra-cv/quicktime'
+  CC       atom.lo
+  CC       avcc.lo
+  CC       avi_hdrl.lo
+  CC       avi_idx1.lo
+  CC       avi_movi.lo
+avi_hdrl.c: In function ‘quicktime_read_hdrl’:
+avi_hdrl.c:27:3: warning: implicit declaration of function ‘quicktime_atom_read_header’ [-Wimplicit-function-declaration]
+   quicktime_atom_read_header(file, &leaf_atom);
+   ^
+avi_hdrl.c:45:3: warning: implicit declaration of function ‘quicktime_atom_skip’ [-Wimplicit-function-declaration]
+   quicktime_atom_skip(file, &leaf_atom);
+   ^
+avi_hdrl.c: In function ‘quicktime_init_hdrl’:
+avi_hdrl.c:101:2: warning: implicit declaration of function ‘quicktime_atom_write_footer’ [-Wimplicit-function-declaration]
+  quicktime_atom_write_footer(file, &avih_atom);
+  ^
+avi_hdrl.c: In function ‘quicktime_finalize_hdrl’:
+avi_hdrl.c:180:24: warning: implicit declaration of function ‘quicktime_avg_chunk_samples’ [-Wimplicit-function-declaration]
+    samples_per_chunk = quicktime_avg_chunk_samples(file, trak);
+                        ^
+avi_movi.c: In function ‘quicktime_read_movi’:
+avi_movi.c:40:2: warning: implicit declaration of function ‘quicktime_atom_skip’ [-Wimplicit-function-declaration]
+  quicktime_atom_skip(file, parent_atom);
+  ^
+avi_movi.c: In function ‘quicktime_finalize_movi’:
+avi_movi.c:59:2: warning: implicit declaration of function ‘quicktime_atom_write_footer’ [-Wimplicit-function-declaration]
+  quicktime_atom_write_footer(file, &movi->atom);
+  ^
+avcc.c: In function ‘quicktime_write_avcc’:
+avcc.c:32:2: warning: implicit declaration of function ‘quicktime_atom_write_footer’ [-Wimplicit-function-declaration]
+  quicktime_atom_write_footer(file, &atom);
+  ^
+avcc.c: In function ‘quicktime_read_avcc’:
+avcc.c:46:2: warning: implicit declaration of function ‘quicktime_atom_skip’ [-Wimplicit-function-declaration]
+  quicktime_atom_skip(file, parent_atom);
+  ^
+avi_idx1.c: In function ‘quicktime_write_idx1’:
+avi_idx1.c:96:2: warning: implicit declaration of function ‘quicktime_atom_write_footer’ [-Wimplicit-function-declaration]
+  quicktime_atom_write_footer(file, &idx1->atom);
+  ^
+  CC       avi_strl.lo
+  CC       avi_odml.lo
+  CC       avi_ix.lo
+  CC       avi_indx.lo
+  CC       avi_riff.lo
+avi_odml.c: In function ‘quicktime_init_odml’:
+avi_odml.c:26:2: warning: implicit declaration of function ‘quicktime_atom_write_footer’ [-Wimplicit-function-declaration]
+  quicktime_atom_write_footer(file, &dmlh_atom);
+  ^
+avi_strl.c: In function ‘quicktime_init_strl’:
+avi_strl.c:130:2: warning: implicit declaration of function ‘quicktime_atom_write_footer’ [-Wimplicit-function-declaration]
+  quicktime_atom_write_footer(file, &strh_atom);
+  ^
+avi_strl.c: In function ‘quicktime_read_strl’:
+avi_strl.c:265:3: warning: implicit declaration of function ‘quicktime_atom_read_header’ [-Wimplicit-function-declaration]
+   quicktime_atom_read_header(file, &leaf_atom);
+   ^
+avi_strl.c:349:5: warning: implicit declaration of function ‘quicktime_read_int16_le’ [-Wimplicit-function-declaration]
+     quicktime_read_int16_le(file);
+     ^
+avi_strl.c:381:3: warning: implicit declaration of function ‘quicktime_atom_skip’ [-Wimplicit-function-declaration]
+   quicktime_atom_skip(file, &leaf_atom);
+   ^
+avi_riff.c: In function ‘quicktime_read_riff’:
+avi_riff.c:25:12: warning: implicit declaration of function ‘quicktime_atom_read_header’ [-Wimplicit-function-declaration]
+   result = quicktime_atom_read_header(file, &leaf_atom);
+            ^
+avi_riff.c:68:5: warning: implicit declaration of function ‘quicktime_atom_skip’ [-Wimplicit-function-declaration]
+     quicktime_atom_skip(file, &leaf_atom);
+     ^
+avi_riff.c: In function ‘quicktime_finalize_riff’:
+avi_riff.c:175:2: warning: implicit declaration of function ‘quicktime_atom_write_footer’ [-Wimplicit-function-declaration]
+  quicktime_atom_write_footer(file, &riff->atom);
+  ^
+avi_ix.c: In function ‘quicktime_write_ix’:
+avi_ix.c:97:2: warning: implicit declaration of function ‘quicktime_atom_write_footer’ [-Wimplicit-function-declaration]
+  quicktime_atom_write_footer(file, &ix->atom);
+  ^
+avi_ix.c: In function ‘quicktime_read_ix’:
+avi_ix.c:114:2: warning: implicit declaration of function ‘quicktime_atom_read_header’ [-Wimplicit-function-declaration]
+  quicktime_atom_read_header(file, &leaf_atom);
+  ^
+avi_ix.c:116:24: warning: implicit declaration of function ‘quicktime_read_int16_le’ [-Wimplicit-function-declaration]
+  ix->longs_per_entry = quicktime_read_int16_le(file);
+                        ^
+avi_ix.c:121:2: warning: implicit declaration of function ‘quicktime_read_char32’ [-Wimplicit-function-declaration]
+  quicktime_read_char32(file, ix->chunk_id);
+  ^
+avi_indx.c: In function ‘quicktime_finalize_indx’:
+avi_indx.c:103:3: warning: implicit declaration of function ‘quicktime_atom_write_footer’ [-Wimplicit-function-declaration]
+   quicktime_atom_write_footer(file, &indx->atom);
+   ^
+avi_indx.c: In function ‘quicktime_read_indx’:
+avi_indx.c:135:26: warning: implicit declaration of function ‘quicktime_read_int16_le’ [-Wimplicit-function-declaration]
+  indx->longs_per_entry = quicktime_read_int16_le(file);
+                          ^
+avi_indx.c:139:2: warning: implicit declaration of function ‘quicktime_read_char32’ [-Wimplicit-function-declaration]
+  quicktime_read_char32(file, indx->chunk_id);
+  ^
+  CC       cmodel_default.lo
+  CC       cmodel_float.lo
+  CC       cmodel_yuv420p.lo
+  CC       cmodel_yuv422.lo
+  CC       codecs.lo
+codecs.c: In function ‘quicktime_id_to_codec’:
+codecs.c:86:11: warning: format ‘%p’ expects argument of type ‘void *’, but argument 2 has type ‘int’ [-Wformat=]
+    printf("quicktime_id_to_codec: unknown audio id: %p\n", id);
+           ^
+codecs.c: In function ‘quicktime_set_parameter’:
+codecs.c:275:59: warning: passing argument 3 of ‘codec->set_parameter’ discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+    if(codec->set_parameter) codec->set_parameter(file, i, key, value);
+                                                           ^
+codecs.c:275:59: note: expected ‘char *’ but argument is of type ‘const char *’
+codecs.c:282:59: warning: passing argument 3 of ‘codec->set_parameter’ discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+    if(codec->set_parameter) codec->set_parameter(file, i, key, value);
+                                                           ^
+codecs.c:282:59: note: expected ‘char *’ but argument is of type ‘const char *’
+  CC       colormodels.lo
+colormodels.c: In function ‘cmodel_transfer’:
+colormodels.c:422:4: warning: implicit declaration of function ‘cmodel_float’ [-Wimplicit-function-declaration]
+    cmodel_float(PERMUTATION_VALUES);
+    ^
+colormodels.c:427:4: warning: implicit declaration of function ‘cmodel_yuv420p’ [-Wimplicit-function-declaration]
+    cmodel_yuv420p(PERMUTATION_VALUES);
+    ^
+colormodels.c:431:4: warning: implicit declaration of function ‘cmodel_yuv9p’ [-Wimplicit-function-declaration]
+    cmodel_yuv9p(PERMUTATION_VALUES);
+    ^
+colormodels.c:435:4: warning: implicit declaration of function ‘cmodel_yuv444p’ [-Wimplicit-function-declaration]
+    cmodel_yuv444p(PERMUTATION_VALUES);
+    ^
+colormodels.c:439:4: warning: implicit declaration of function ‘cmodel_yuv422’ [-Wimplicit-function-declaration]
+    cmodel_yuv422(PERMUTATION_VALUES);
+    ^
+colormodels.c:443:4: warning: implicit declaration of function ‘cmodel_default’ [-Wimplicit-function-declaration]
+    cmodel_default(PERMUTATION_VALUES);
+    ^
+  CC       ctab.lo
+  CC       dinf.lo
+dinf.c: In function ‘quicktime_dinf_init’:
+dinf.c:6:2: warning: implicit declaration of function ‘quicktime_dref_init’ [-Wimplicit-function-declaration]
+  quicktime_dref_init(&(dinf->dref));
+  ^
+dinf.c: In function ‘quicktime_dinf_delete’:
+dinf.c:11:2: warning: implicit declaration of function ‘quicktime_dref_delete’ [-Wimplicit-function-declaration]
+  quicktime_dref_delete(&(dinf->dref));
+  ^
+dinf.c: In function ‘quicktime_dinf_init_all’:
+dinf.c:16:2: warning: implicit declaration of function ‘quicktime_dref_init_all’ [-Wimplicit-function-declaration]
+  quicktime_dref_init_all(&(dinf->dref));
+  ^
+dinf.c: In function ‘quicktime_dinf_dump’:
+dinf.c:22:2: warning: implicit declaration of function ‘quicktime_dref_dump’ [-Wimplicit-function-declaration]
+  quicktime_dref_dump(&(dinf->dref));
+  ^
+dinf.c: In function ‘quicktime_read_dinf’:
+dinf.c:31:3: warning: implicit declaration of function ‘quicktime_atom_read_header’ [-Wimplicit-function-declaration]
+   quicktime_atom_read_header(file, &leaf_atom);
+   ^
+dinf.c:33:6: warning: implicit declaration of function ‘quicktime_read_dref’ [-Wimplicit-function-declaration]
+    { quicktime_read_dref(file, &(dinf->dref)); }
+      ^
+dinf.c:35:4: warning: implicit declaration of function ‘quicktime_atom_skip’ [-Wimplicit-function-declaration]
+    quicktime_atom_skip(file, &leaf_atom);
+    ^
+dinf.c: In function ‘quicktime_write_dinf’:
+dinf.c:43:2: warning: implicit declaration of function ‘quicktime_write_dref’ [-Wimplicit-function-declaration]
+  quicktime_write_dref(file, &(dinf->dref));
+  ^
+dinf.c:44:2: warning: implicit declaration of function ‘quicktime_atom_write_footer’ [-Wimplicit-function-declaration]
+  quicktime_atom_write_footer(file, &atom);
+  ^
+ctab.c: In function ‘quicktime_read_ctab’:
+ctab.c:46:16: warning: implicit declaration of function ‘quicktime_read_int16’ [-Wimplicit-function-declaration]
+  ctab->flags = quicktime_read_int16(file);
+                ^
+  CC       dref.lo
+  CC       edts.lo
+dref.c: In function ‘quicktime_read_dref_table’:
+dref.c:27:2: warning: implicit declaration of function ‘quicktime_read_char32’ [-Wimplicit-function-declaration]
+  quicktime_read_char32(file, table->type);
+  ^
+dref.c: In function ‘quicktime_dref_table_dump’:
+dref.c:54:9: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long int’ [-Wformat=]
+  printf("       flags %d\n", table->flags);
+         ^
+dref.c: In function ‘quicktime_dref_dump’:
+dref.c:95:9: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long int’ [-Wformat=]
+  printf("      flags %d\n", dref->flags);
+         ^
+dref.c: In function ‘quicktime_write_dref’:
+dref.c:131:2: warning: implicit declaration of function ‘quicktime_atom_write_footer’ [-Wimplicit-function-declaration]
+  quicktime_atom_write_footer(file, &atom);
+  ^
+edts.c: In function ‘quicktime_edts_init’:
+edts.c:6:2: warning: implicit declaration of function ‘quicktime_elst_init’ [-Wimplicit-function-declaration]
+  quicktime_elst_init(&(edts->elst));
+  ^
+edts.c: In function ‘quicktime_edts_delete’:
+edts.c:11:2: warning: implicit declaration of function ‘quicktime_elst_delete’ [-Wimplicit-function-declaration]
+  quicktime_elst_delete(&(edts->elst));
+  ^
+edts.c: In function ‘quicktime_edts_init_table’:
+edts.c:16:2: warning: implicit declaration of function ‘quicktime_elst_init_all’ [-Wimplicit-function-declaration]
+  quicktime_elst_init_all(&(edts->elst));
+  ^
+edts.c: In function ‘quicktime_read_edts’:
+edts.c:25:3: warning: implicit declaration of function ‘quicktime_atom_read_header’ [-Wimplicit-function-declaration]
+   quicktime_atom_read_header(file, &leaf_atom);
+   ^
+edts.c:28:5: warning: implicit declaration of function ‘quicktime_read_elst’ [-Wimplicit-function-declaration]
+   { quicktime_read_elst(file, &(edts->elst)); }
+     ^
+edts.c:30:4: warning: implicit declaration of function ‘quicktime_atom_skip’ [-Wimplicit-function-declaration]
+    quicktime_atom_skip(file, &leaf_atom);
+    ^
+edts.c: In function ‘quicktime_edts_dump’:
+edts.c:37:2: warning: implicit declaration of function ‘quicktime_elst_dump’ [-Wimplicit-function-declaration]
+  quicktime_elst_dump(&(edts->elst));
+  ^
+edts.c: In function ‘quicktime_write_edts’:
+edts.c:44:2: warning: implicit declaration of function ‘quicktime_write_elst’ [-Wimplicit-function-declaration]
+  quicktime_write_elst(file, &(edts->elst), duration);
+  ^
+edts.c:45:2: warning: implicit declaration of function ‘quicktime_atom_write_footer’ [-Wimplicit-function-declaration]
+  quicktime_atom_write_footer(file, &atom);
+  ^
+  CC       elst.lo
+  CC       esds.lo
+elst.c: In function ‘quicktime_elst_dump’:
+elst.c:74:9: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long int’ [-Wformat=]
+  printf("    flags %d\n", elst->flags);
+         ^
+elst.c:75:9: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long int’ [-Wformat=]
+  printf("    total_entries %d\n", elst->total_entries);
+         ^
+elst.c: In function ‘quicktime_write_elst’:
+elst.c:113:2: warning: implicit declaration of function ‘quicktime_atom_write_footer’ [-Wimplicit-function-declaration]
+  quicktime_atom_write_footer(file, &atom);
+  ^
+esds.c: In function ‘quicktime_read_esds’:
+esds.c:62:3: warning: implicit declaration of function ‘quicktime_read_int16’ [-Wimplicit-function-declaration]
+   quicktime_read_int16(file);
+   ^
+esds.c:95:5: warning: implicit declaration of function ‘quicktime_atom_skip’ [-Wimplicit-function-declaration]
+     quicktime_atom_skip(file, parent_atom);
+     ^
+esds.c: In function ‘quicktime_write_esds’:
+esds.c:215:2: warning: implicit declaration of function ‘quicktime_atom_write_footer’ [-Wimplicit-function-declaration]
+  quicktime_atom_write_footer(file, &atom);
+  ^
+  CC       graphics.lo
+  CC       hdlr.lo
+graphics.c: In function ‘quicktime_delete_scaletable’:
+graphics.c:74:2: warning: implicit declaration of function ‘free’ [-Wimplicit-function-declaration]
+  free(scaletable->input_x);
+  ^
+graphics.c:74:2: warning: incompatible implicit declaration of built-in function ‘free’
+graphics.c:74:2: note: include ‘<stdlib.h>’ or provide a declaration of ‘free’
+  CC       ima4.lo
+hdlr.c: In function ‘quicktime_hdlr_dump’:
+hdlr.c:64:9: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long int’ [-Wformat=]
+  printf("    flags %d\n", hdlr->flags);
+         ^
+hdlr.c: In function ‘quicktime_read_hdlr’:
+hdlr.c:74:2: warning: implicit declaration of function ‘quicktime_read_char32’ [-Wimplicit-function-declaration]
+  quicktime_read_char32(file, hdlr->component_type);
+  ^
+hdlr.c:79:2: warning: implicit declaration of function ‘quicktime_read_pascal’ [-Wimplicit-function-declaration]
+  quicktime_read_pascal(file, hdlr->component_name);
+  ^
+hdlr.c: In function ‘quicktime_write_hdlr’:
+hdlr.c:96:2: warning: implicit declaration of function ‘quicktime_atom_write_footer’ [-Wimplicit-function-declaration]
+  quicktime_atom_write_footer(file, &atom);
+  ^
+  CC       interlacemodes.lo
+  CC       jpeg.lo
+jpeg.c: In function ‘set_parameter’:
+jpeg.c:360:6: warning: implicit declaration of function ‘strcasecmp’ [-Wimplicit-function-declaration]
+  if(!strcasecmp(key, "jpeg_quality"))
+      ^
+  CC       libdv.lo
+  CC       libmjpeg.lo
+  CC       matrix.lo
+libmjpeg.c: In function ‘jpeg_load_dht’:
+libmjpeg.c:378:8: warning: implicit declaration of function ‘memcpy’ [-Wimplicit-function-declaration]
+        memcpy ((*hufftbl)->bits, bits, sizeof (*hufftbl)->bits);
+        ^
+libmjpeg.c:378:8: warning: incompatible implicit declaration of built-in function ‘memcpy’
+libmjpeg.c:378:8: note: include ‘<string.h>’ or provide a declaration of ‘memcpy’
+libmjpeg.c: In function ‘append_buffer’:
+libmjpeg.c:436:2: warning: incompatible implicit declaration of built-in function ‘memcpy’
+  memcpy(*buffer + *size, data, data_size);
+  ^
+libmjpeg.c:436:2: note: include ‘<string.h>’ or provide a declaration of ‘memcpy’
+libmjpeg.c: In function ‘allocate_temps’:
+libmjpeg.c:468:6: warning: implicit declaration of function ‘memset’ [-Wimplicit-function-declaration]
+      memset(mjpeg->temp_data + mjpeg->coded_w * mjpeg->coded_h, 
+      ^
+libmjpeg.c:468:6: warning: incompatible implicit declaration of built-in function ‘memset’
+libmjpeg.c:468:6: note: include ‘<string.h>’ or provide a declaration of ‘memset’
+libmjpeg.c: In function ‘qt_table_offsets’:
+libmjpeg.c:1535:2: warning: implicit declaration of function ‘bzero’ [-Wimplicit-function-declaration]
+  bzero(header, sizeof(qt_hdr_t) * 2);
+  ^
+libmjpeg.c:1535:2: warning: incompatible implicit declaration of built-in function ‘bzero’
+libmjpeg.c: In function ‘mjpeg_get_quicktime_field2’:
+libmjpeg.c:1913:2: warning: incompatible implicit declaration of built-in function ‘bzero’
+  bzero(&header, sizeof(qt_hdr_t) * 2);
+  ^
+libmjpeg.c: In function ‘mjpeg_get_avi_field2’:
+libmjpeg.c:1924:2: warning: incompatible implicit declaration of built-in function ‘bzero’
+  bzero(&header, sizeof(avi_hdr_t) * 2);
+  ^
+  CC       mdat.lo
+  CC       mdhd.lo
+mdat.c: In function ‘quicktime_read_mdat’:
+mdat.c:14:2: warning: implicit declaration of function ‘quicktime_atom_skip’ [-Wimplicit-function-declaration]
+  quicktime_atom_skip(file, parent_atom);
+  ^
+  CC       mdia.lo
+mdhd.c: In function ‘quicktime_read_mdhd’:
+mdhd.c:46:19: warning: implicit declaration of function ‘quicktime_read_int16’ [-Wimplicit-function-declaration]
+  mdhd->language = quicktime_read_int16(file);
+                   ^
+mdhd.c: In function ‘quicktime_mdhd_dump’:
+mdhd.c:54:9: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long int’ [-Wformat=]
+  printf("    flags %d\n", mdhd->flags);
+         ^
+mdhd.c:55:9: warning: format ‘%u’ expects argument of type ‘unsigned int’, but argument 2 has type ‘long unsigned int’ [-Wformat=]
+  printf("    creation_time %u\n", mdhd->creation_time);
+         ^
+mdhd.c:56:9: warning: format ‘%u’ expects argument of type ‘unsigned int’, but argument 2 has type ‘long unsigned int’ [-Wformat=]
+  printf("    modification_time %u\n", mdhd->modification_time);
+         ^
+mdhd.c:57:9: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long int’ [-Wformat=]
+  printf("    time_scale %d\n", mdhd->time_scale);
+         ^
+mdhd.c:58:9: warning: format ‘%d’ expects argument of type ‘int’, but argument 2 has type ‘long int’ [-Wformat=]
+  printf("    duration %d\n", mdhd->duration);
+         ^
+mdhd.c: In function ‘quicktime_write_mdhd’:
+mdhd.c:77:2: warning: implicit declaration of function ‘quicktime_atom_write_footer’ [-Wimplicit-function-declaration]
+  quicktime_atom_write_footer(file, &atom);
+  ^
+  CC       minf.lo
+mdia.c: In function ‘quicktime_mdia_init’:
+mdia.c:7:2: warning: implicit declaration of function ‘quicktime_mdhd_init’ [-Wimplicit-function-declaration]
+  quicktime_mdhd_init(&(mdia->mdhd));
+  ^
+mdia.c:8:2: warning: implicit declaration of function ‘quicktime_hdlr_init’ [-Wimplicit-function-declaration]
+  quicktime_hdlr_init(&(mdia->hdlr));
+  ^
+mdia.c:9:2: warning: implicit declaration of function ‘quicktime_minf_init’ [-Wimplicit-function-declaration]
+  quicktime_minf_init(&(mdia->minf));
+  ^
+mdia.c: In function ‘quicktime_mdia_init_video’:
+mdia.c:24:2: warning: implicit declaration of function ‘quicktime_hdlr_init_video’ [-Wimplicit-function-declaration]
+  quicktime_hdlr_init_video(&(mdia->hdlr));
+  ^
+mdia.c: In function ‘quicktime_mdia_init_audio’:
+mdia.c:43:2: warning: implicit declaration of function ‘quicktime_hdlr_init_audio’ [-Wimplicit-function-declaration]
+  quicktime_hdlr_init_audio(&(mdia->hdlr));
+  ^
+mdia.c: In function ‘quicktime_mdia_delete’:
+mdia.c:48:2: warning: implicit declaration of function ‘quicktime_mdhd_delete’ [-Wimplicit-function-declaration]
+  quicktime_mdhd_delete(&(mdia->mdhd));
+  ^
+mdia.c:49:2: warning: implicit declaration of function ‘quicktime_hdlr_delete’ [-Wimplicit-function-declaration]
+  quicktime_hdlr_delete(&(mdia->hdlr));
+  ^
+mdia.c:50:2: warning: implicit declaration of function ‘quicktime_minf_delete’ [-Wimplicit-function-declaration]
+  quicktime_minf_delete(&(mdia->minf));
+  ^
+mdia.c: In function ‘quicktime_mdia_dump’:
+mdia.c:56:2: warning: implicit declaration of function ‘quicktime_mdhd_dump’ [-Wimplicit-function-declaration]
+  quicktime_mdhd_dump(&(mdia->mdhd));
+  ^
+mdia.c:57:2: warning: implicit declaration of function ‘quicktime_hdlr_dump’ [-Wimplicit-function-declaration]
+  quicktime_hdlr_dump(&(mdia->hdlr));
+  ^
+mdia.c:58:2: warning: implicit declaration of function ‘quicktime_minf_dump’ [-Wimplicit-function-declaration]
+  quicktime_minf_dump(&(mdia->minf));
+  ^
+mdia.c: In function ‘quicktime_read_mdia’:
+mdia.c:67:3: warning: implicit declaration of function ‘quicktime_atom_read_header’ [-Wimplicit-function-declaration]
+   quicktime_atom_read_header(file, &leaf_atom);
+   ^
+mdia.c:72:6: warning: implicit declaration of function ‘quicktime_read_mdhd’ [-Wimplicit-function-declaration]
+    { quicktime_read_mdhd(file, &(mdia->mdhd)); }
+      ^
+mdia.c:76:4: warning: implicit declaration of function ‘quicktime_read_hdlr’ [-Wimplicit-function-declaration]
+    quicktime_read_hdlr(file, &(mdia->hdlr)); 
+    ^
+mdia.c:78:4: warning: implicit declaration of function ‘quicktime_atom_skip’ [-Wimplicit-function-declaration]
+    quicktime_atom_skip(file, &leaf_atom);
+    ^
+mdia.c:82:6: warning: implicit declaration of function ‘quicktime_read_minf’ [-Wimplicit-function-declaration]
+    { quicktime_read_minf(file, &(mdia->minf), &leaf_atom); }
+      ^
+mdia.c: In function ‘quicktime_write_mdia’:
+mdia.c:95:2: warning: implicit declaration of function ‘quicktime_write_mdhd’ [-Wimplicit-function-declaration]
+  quicktime_write_mdhd(file, &(mdia->mdhd));
+  ^
+mdia.c:96:2: warning: implicit declaration of function ‘quicktime_write_hdlr’ [-Wimplicit-function-declaration]
+  quicktime_write_hdlr(file, &(mdia->hdlr));
+  ^
+mdia.c:97:2: warning: implicit declaration of function ‘quicktime_write_minf’ [-Wimplicit-function-declaration]
+  quicktime_write_minf(file, &(mdia->minf));
+  ^
+mdia.c:99:2: warning: implicit declaration of function ‘quicktime_atom_write_footer’ [-Wimplicit-function-declaration]
+  quicktime_atom_write_footer(file, &atom);
+  ^
+minf.c: In function ‘quicktime_minf_init’:
+minf.c:9:2: warning: implicit declaration of function ‘quicktime_vmhd_init’ [-Wimplicit-function-declaration]
+  quicktime_vmhd_init(&(minf->vmhd));
+  ^
+minf.c:10:2: warning: implicit declaration of function ‘quicktime_smhd_init’ [-Wimplicit-function-declaration]
+  quicktime_smhd_init(&(minf->smhd));
+  ^
+minf.c:11:2: warning: implicit declaration of function ‘quicktime_hdlr_init’ [-Wimplicit-function-declaration]
+  quicktime_hdlr_init(&(minf->hdlr));
+  ^
+minf.c:12:2: warning: implicit declaration of function ‘quicktime_dinf_init’ [-Wimplicit-function-declaration]
+  quicktime_dinf_init(&(minf->dinf));
+  ^
+minf.c:13:2: warning: implicit declaration of function ‘quicktime_stbl_init’ [-Wimplicit-function-declaration]
+  quicktime_stbl_init(&(minf->stbl));
+  ^
+minf.c: In function ‘quicktime_minf_init_video’:
+minf.c:26:2: warning: implicit declaration of function ‘quicktime_vmhd_init_video’ [-Wimplicit-function-declaration]
+  quicktime_vmhd_init_video(file, &(minf->vmhd), frame_w, frame_h, frame_rate);
+  ^
+minf.c:30:2: warning: implicit declaration of function ‘quicktime_hdlr_init_data’ [-Wimplicit-function-declaration]
+  quicktime_hdlr_init_data(&(minf->hdlr));
+  ^
+minf.c:32:2: warning: implicit declaration of function ‘quicktime_dinf_init_all’ [-Wimplicit-function-declaration]
+  quicktime_dinf_init_all(&(minf->dinf));
+  ^
+minf.c: In function ‘quicktime_minf_delete’:
+minf.c:57:2: warning: implicit declaration of function ‘quicktime_vmhd_delete’ [-Wimplicit-function-declaration]
+  quicktime_vmhd_delete(&(minf->vmhd));
+  ^
+minf.c:58:2: warning: implicit declaration of function ‘quicktime_smhd_delete’ [-Wimplicit-function-declaration]
+  quicktime_smhd_delete(&(minf->smhd));
+  ^
+minf.c:59:2: warning: implicit declaration of function ‘quicktime_dinf_delete’ [-Wimplicit-function-declaration]
+  quicktime_dinf_delete(&(minf->dinf));
+  ^
+minf.c:60:2: warning: implicit declaration of function ‘quicktime_stbl_delete’ [-Wimplicit-function-declaration]
+  quicktime_stbl_delete(&(minf->stbl));
+  ^
+minf.c:61:2: warning: implicit declaration of function ‘quicktime_hdlr_delete’ [-Wimplicit-function-declaration]
+  quicktime_hdlr_delete(&(minf->hdlr));
+  ^
+minf.c: In function ‘quicktime_minf_dump’:
+minf.c:69:21: warning: implicit declaration of function ‘quicktime_smhd_dump’ [-Wimplicit-function-declaration]
+  if(minf->is_audio) quicktime_smhd_dump(&(minf->smhd));
+                     ^
+minf.c:70:21: warning: implicit declaration of function ‘quicktime_vmhd_dump’ [-Wimplicit-function-declaration]
+  if(minf->is_video) quicktime_vmhd_dump(&(minf->vmhd));
+                     ^
+minf.c:71:2: warning: implicit declaration of function ‘quicktime_hdlr_dump’ [-Wimplicit-function-declaration]
+  quicktime_hdlr_dump(&(minf->hdlr));
+  ^
+minf.c:72:2: warning: implicit declaration of function ‘quicktime_dinf_dump’ [-Wimplicit-function-declaration]
+  quicktime_dinf_dump(&(minf->dinf));
+  ^
+minf.c:73:2: warning: implicit declaration of function ‘quicktime_stbl_dump’ [-Wimplicit-function-declaration]
+  quicktime_stbl_dump(minf, &(minf->stbl));
+  ^
+minf.c: In function ‘quicktime_read_minf’:
+minf.c:82:3: warning: implicit declaration of function ‘quicktime_atom_read_header’ [-Wimplicit-function-declaration]
+   quicktime_atom_read_header(file, &leaf_atom);
+   ^
+minf.c:87:26: warning: implicit declaration of function ‘quicktime_read_vmhd’ [-Wimplicit-function-declaration]
+    { minf->is_video = 1; quicktime_read_vmhd(file, &(minf->vmhd)); }
+                          ^
+minf.c:90:26: warning: implicit declaration of function ‘quicktime_read_smhd’ [-Wimplicit-function-declaration]
+    { minf->is_audio = 1; quicktime_read_smhd(file, &(minf->smhd)); }
+                          ^
+minf.c:94:5: warning: implicit declaration of function ‘quicktime_read_hdlr’ [-Wimplicit-function-declaration]
+     quicktime_read_hdlr(file, &(minf->hdlr)); 
+     ^
+minf.c:96:5: warning: implicit declaration of function ‘quicktime_atom_skip’ [-Wimplicit-function-declaration]
+     quicktime_atom_skip(file, &leaf_atom);
+     ^
+minf.c:100:6: warning: implicit declaration of function ‘quicktime_read_dinf’ [-Wimplicit-function-declaration]
+    { quicktime_read_dinf(file, &(minf->dinf), &leaf_atom); }
+      ^
+minf.c:103:6: warning: implicit declaration of function ‘quicktime_read_stbl’ [-Wimplicit-function-declaration]
+    { quicktime_read_stbl(file, minf, &(minf->stbl), &leaf_atom); }
+      ^
+minf.c: In function ‘quicktime_write_minf’:
+minf.c:116:21: warning: implicit declaration of function ‘quicktime_write_vmhd’ [-Wimplicit-function-declaration]
+  if(minf->is_video) quicktime_write_vmhd(file, &(minf->vmhd));
+                     ^
+minf.c:117:21: warning: implicit declaration of function ‘quicktime_write_smhd’ [-Wimplicit-function-declaration]
+  if(minf->is_audio) quicktime_write_smhd(file, &(minf->smhd));
+                     ^
+minf.c:118:2: warning: implicit declaration of function ‘quicktime_write_hdlr’ [-Wimplicit-function-declaration]
+  quicktime_write_hdlr(file, &(minf->hdlr));
+  ^
+minf.c:119:2: warning: implicit declaration of function ‘quicktime_write_dinf’ [-Wimplicit-function-declaration]
+  quicktime_write_dinf(file, &(minf->dinf));
+  ^
+minf.c:120:2: warning: implicit declaration of function ‘quicktime_write_stbl’ [-Wimplicit-function-declaration]
+  quicktime_write_stbl(file, minf, &(minf->stbl));
+  ^
+minf.c:122:2: warning: implicit declaration of function ‘quicktime_atom_write_footer’ [-Wimplicit-function-declaration]
+  quicktime_atom_write_footer(file, &atom);
+  ^
+  CC       moov.lo
+  CC       mp4a.lo
+  CC       mvhd.lo
+moov.c: In function ‘quicktime_moov_init’:
+moov.c:15:2: warning: implicit declaration of function ‘quicktime_mvhd_init’ [-Wimplicit-function-declaration]
+  quicktime_mvhd_init(&(moov->mvhd));
+  ^
+moov.c:16:2: warning: implicit declaration of function ‘quicktime_udta_init’ [-Wimplicit-function-declaration]
+  quicktime_udta_init(&(moov->udta));
+  ^
+moov.c:17:2: warning: implicit declaration of function ‘quicktime_ctab_init’ [-Wimplicit-function-declaration]
+  quicktime_ctab_init(&(moov->ctab));
+  ^
+moov.c: In function ‘quicktime_moov_delete’:
+moov.c:25:2: warning: implicit declaration of function ‘quicktime_mvhd_delete’ [-Wimplicit-function-declaration]
+  quicktime_mvhd_delete(&(moov->mvhd));
+  ^
+moov.c:26:2: warning: implicit declaration of function ‘quicktime_udta_delete’ [-Wimplicit-function-declaration]
+  quicktime_udta_delete(&(moov->udta));
+  ^
+moov.c:27:2: warning: implicit declaration of function ‘quicktime_ctab_delete’ [-Wimplicit-function-declaration]
+  quicktime_ctab_delete(&(moov->ctab));
+  ^
+moov.c: In function ‘quicktime_moov_dump’:
+moov.c:35:2: warning: implicit declaration of function ‘quicktime_mvhd_dump’ [-Wimplicit-function-declaration]
+  quicktime_mvhd_dump(&(moov->mvhd));
+  ^
+moov.c:36:2: warning: implicit declaration of function ‘quicktime_udta_dump’ [-Wimplicit-function-declaration]
+  quicktime_udta_dump(&(moov->udta));
+  ^
+moov.c:39:2: warning: implicit declaration of function ‘quicktime_ctab_dump’ [-Wimplicit-function-declaration]
+  quicktime_ctab_dump(&(moov->ctab));
+  ^
+moov.c: In function ‘read_cmov’:
+moov.c:60:3: warning: implicit declaration of function ‘quicktime_atom_read_header’ [-Wimplicit-function-declaration]
+   quicktime_atom_read_header(file, &leaf_atom);
+   ^
+moov.c:69:7: warning: implicit declaration of function ‘strcmp’ [-Wimplicit-function-declaration]
+    if(strcmp(data, "zlib"))
+       ^
+moov.c:80:4: warning: implicit declaration of function ‘quicktime_atom_skip’ [-Wimplicit-function-declaration]
+    quicktime_atom_skip(file, &leaf_atom);
+    ^
+moov.c:141:7: warning: implicit declaration of function ‘quicktime_read_moov’ [-Wimplicit-function-declaration]
+    if(quicktime_read_moov(file, 
+       ^
+moov.c: In function ‘quicktime_read_moov’:
+moov.c:194:4: warning: implicit declaration of function ‘quicktime_read_mvhd’ [-Wimplicit-function-declaration]
+    quicktime_read_mvhd(file, &(moov->mvhd), &leaf_atom);
+    ^
+moov.c:210:4: warning: implicit declaration of function ‘quicktime_read_udta’ [-Wimplicit-function-declaration]
+    quicktime_read_udta(file, &(moov->udta), &leaf_atom);
+    ^
+moov.c:216:4: warning: implicit declaration of function ‘quicktime_read_ctab’ [-Wimplicit-function-declaration]
+    quicktime_read_ctab(file, &(moov->ctab));
+    ^
+moov.c: In function ‘quicktime_write_moov’:
+moov.c:262:2: warning: implicit declaration of function ‘quicktime_write_mvhd’ [-Wimplicit-function-declaration]
+  quicktime_write_mvhd(file, &(moov->mvhd));
+  ^
+moov.c:263:2: warning: implicit declaration of function ‘quicktime_write_udta’ [-Wimplicit-function-declaration]
+  quicktime_write_udta(file, &(moov->udta));
+  ^
+moov.c:270:2: warning: implicit declaration of function ‘quicktime_atom_write_footer’ [-Wimplicit-function-declaration]
+  quicktime_atom_write_footer(file, &atom);
+  ^
+In file included from mp4a.c:13:0:
+/usr/include/faad.h:32:9: note: #pragma message: please update faad2 include filename and function names!
+ #pragma message("please update faad2 include filename and function names!")
+         ^
+mp4a.c: In function ‘decode’:
+mp4a.c:185:4: warning: implicit declaration of function ‘quicktime_copy_vbr_int16’ [-Wimplicit-function-declaration]
+    quicktime_copy_vbr_int16(vbr, 
+    ^
+mvhd.c: In function ‘quicktime_mvhd_init’:
+mvhd.c:18:2: warning: implicit declaration of function ‘quicktime_matrix_init’ [-Wimplicit-function-declaration]
+  quicktime_matrix_init(&(mvhd->matrix));
+  ^
+mvhd.c: In function ‘quicktime_mvhd_dump’:
+mvhd.c:39:9: warning: format ‘%u’ expects argument of type ‘unsigned int’, but argument 2 has type ‘long unsigned int’ [-Wformat=]
+  printf("  creation_time %u\n", mvhd->creation_time);
+         ^
+mvhd.c:40:9: warning: format ‘%u’ expects argument of type ‘unsigned int’, but argument 2 has type ‘long unsigned int’ [-Wformat=]
+  printf("  modification_time %u\n", mvhd->modification_time);
+         ^
+mvhd.c:45:2: warning: implicit declaration of function ‘quicktime_print_chars’ [-Wimplicit-function-declaration]
+  quicktime_print_chars("  reserved ", mvhd->reserved, 10);
+  ^
+mvhd.c:46:2: warning: implicit declaration of function ‘quicktime_matrix_dump’ [-Wimplicit-function-declaration]
+  quicktime_matrix_dump(&(mvhd->matrix));
+  ^
+mvhd.c: In function ‘quicktime_read_mvhd’:
+mvhd.c:67:2: warning: implicit declaration of function ‘quicktime_read_matrix’ [-Wimplicit-function-declaration]
+  quicktime_read_matrix(file, &(mvhd->matrix));
+  ^
+mvhd.c: In function ‘quicktime_write_mvhd’:
+mvhd.c:96:2: warning: implicit declaration of function ‘quicktime_write_matrix’ [-Wimplicit-function-declaration]
+  quicktime_write_matrix(file, &(mvhd->matrix));
+  ^
+mvhd.c:105:2: warning: implicit declaration of function ‘quicktime_atom_write_footer’ [-Wimplicit-function-declaration]
+  quicktime_atom_write_footer(file, &atom);
+  ^
+  CC       plugin.lo
+  CC       qtcache.lo
+  CC       qtdv.lo
+  CC       qtffmpeg.lo
+  CC       qth264.lo
+  CC       qtpng.lo
+qtffmpeg.c: In function ‘quicktime_new_ffmpeg’:
+qtffmpeg.c:42:18: error: ‘CODEC_ID_SVQ1’ undeclared (first use in this function)
+  if(ffmpeg_id == CODEC_ID_SVQ1)
+                  ^
+qtffmpeg.c:42:18: note: each undeclared identifier is reported only once for each function it appears in
+qtffmpeg.c:89:19: error: ‘CODEC_ID_MPEG4’ undeclared (first use in this function)
+     (ffmpeg_id == CODEC_ID_MPEG4 ||
+                   ^
+qtffmpeg.c:90:26: error: ‘CODEC_ID_MPEG1VIDEO’ undeclared (first use in this function)
+             ffmpeg_id == CODEC_ID_MPEG1VIDEO ||
+                          ^
+qtffmpeg.c:91:26: error: ‘CODEC_ID_MPEG2VIDEO’ undeclared (first use in this function)
+             ffmpeg_id == CODEC_ID_MPEG2VIDEO ||
+                          ^
+qtffmpeg.c:92:26: error: ‘CODEC_ID_H263P’ undeclared (first use in this function)
+             ffmpeg_id == CODEC_ID_H263P ))
+                          ^
+qtffmpeg.c: In function ‘get_chroma_factor’:
+qtffmpeg.c:227:8: error: ‘PIX_FMT_YUV420P’ undeclared (first use in this function)
+   case PIX_FMT_YUV420P:
+        ^
+qtffmpeg.c:230:8: error: ‘PIX_FMT_YUYV422’ undeclared (first use in this function)
+   case PIX_FMT_YUYV422:
+        ^
+qtffmpeg.c:233:8: error: ‘PIX_FMT_YUV422P’ undeclared (first use in this function)
+   case PIX_FMT_YUV422P:
+        ^
+qtffmpeg.c:236:8: error: ‘PIX_FMT_YUV410P’ undeclared (first use in this function)
+   case PIX_FMT_YUV410P:
+        ^
+qtffmpeg.c: In function ‘quicktime_ffmpeg_decode’:
+qtffmpeg.c:280:25: error: ‘CODEC_ID_H264’ undeclared (first use in this function)
+    ffmpeg->ffmpeg_id != CODEC_ID_H264)
+                         ^
+qth264.c: In function ‘decode’:
+qth264.c:373:3: error: ‘CODEC_ID_H264’ undeclared (first use in this function)
+   CODEC_ID_H264,
+   ^
+qth264.c:373:3: note: each undeclared identifier is reported only once for each function it appears in
+qtffmpeg.c:426:8: error: ‘PIX_FMT_YUV420P’ undeclared (first use in this function)
+   case PIX_FMT_YUV420P:
+        ^
+qtffmpeg.c:429:8: error: ‘PIX_FMT_YUYV422’ undeclared (first use in this function)
+   case PIX_FMT_YUYV422:
+        ^
+qtffmpeg.c:432:8: error: ‘PIX_FMT_YUV422P’ undeclared (first use in this function)
+   case PIX_FMT_YUV422P:
+        ^
+qtffmpeg.c:435:8: error: ‘PIX_FMT_YUV410P’ undeclared (first use in this function)
+   case PIX_FMT_YUV410P:
+        ^
+Makefile:796: recipe for target 'qtffmpeg.lo' failed
+make[3]: *** [qtffmpeg.lo] Error 1
+make[3]: ** Esperando que outros processos terminem.
+Makefile:796: recipe for target 'qth264.lo' failed
+make[3]: *** [qth264.lo] Error 1
+qtpng.c: In function ‘read_function’:
+qtpng.c:60:3: warning: implicit declaration of function ‘memcpy’ [-Wimplicit-function-declaration]
+   memcpy(data, codec->buffer + codec->buffer_position, length);
+   ^
+qtpng.c:60:3: warning: incompatible implicit declaration of built-in function ‘memcpy’
+qtpng.c:60:3: note: include ‘<string.h>’ or provide a declaration of ‘memcpy’
+qtpng.c: In function ‘write_function’:
+qtpng.c:74:2: warning: incompatible implicit declaration of built-in function ‘memcpy’
+  memcpy(codec->buffer + codec->buffer_size, data, length);
+  ^
+qtpng.c:74:2: note: include ‘<string.h>’ or provide a declaration of ‘memcpy’
+qtpng.c: In function ‘set_parameter’:
+qtpng.c:244:6: warning: implicit declaration of function ‘strcasecmp’ [-Wimplicit-function-declaration]
+  if(!strcasecmp(key, "compression_level"))
+      ^
+make[3]: Leaving directory '/tmp/txz/cinelerra/cinelerra-cv/quicktime'
+Makefile:837: recipe for target 'all-recursive' failed
+make[2]: *** [all-recursive] Error 1
+make[2]: Leaving directory '/tmp/txz/cinelerra/cinelerra-cv/quicktime'
+Makefile:516: recipe for target 'all-recursive' failed
+make[1]: *** [all-recursive] Error 1
+make[1]: Leaving directory '/tmp/txz/cinelerra/cinelerra-cv'
+Makefile:446: recipe for target 'all' failed
+make: *** [all] Error 2

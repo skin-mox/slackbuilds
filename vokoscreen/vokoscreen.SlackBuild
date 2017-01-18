@@ -1,13 +1,13 @@
 #!/bin/sh
 # Heavily based on the Slackware 14.2 SlackBuild
 #
-# Created by: Christoph Willing <chris.willing@linux.com>
+# Created by: Skin Mox <skin-mox@bol.com.br>
 #
 #
 # 
 # 
-# Modified by: Skin Mox <skin-mox@bol.com.br>
-#  
+# 
+# 
 #
 # Redistribution and use of this script, with or without modification, is
 # permitted provided that the following conditions are met:
@@ -28,32 +28,20 @@
 # 
 #
 #
-# Official Site: https://obsproject.com/
+# Official Site: http://www.kohaupt-online.de/hp/
 #
 
 # Set variables:
 CWD=`pwd`
 OUTPUT=${OUTPUT:-$CWD}
-PKGNAME=obs-studio
+PKGNAME=vokoscreen
 TMP=${TMP:-/tmp/txz/$PKGNAME}
 PKG=$TMP/package
-VERSION=${VERSION:-17.0.1}
+VERSION=${VERSION:-`date +%Y%m%d`}
 ARCH=${ARCH:-$(uname -m)}
 JOBS=${JOBS:--j5}
 BUILD=${BUILD:-1}
 TAG=${TAG:-sm}
-SUFFIX=${SUFFIX:-tar.gz}
-
-SOURCE="https://github.com/jp9000/${PKGNAME}/archive/${VERSION}.${SUFFIX}"
-FILE=${PKGNAME}-${VERSION}.${SUFFIX}
-
-TAR=${TAR:-$(basename $SOURCE)}
-
-# Download source tarball if still not present
-if [ ! -e $CWD/$FILE ]; then
-   wget -c $SOURCE -O "$CWD/$TAR" || exit 1
-   mv $TAR $FILE
-fi
 
 # Set compiling FLAGS
 if [ "$ARCH" = "i486" ]; then
@@ -76,47 +64,37 @@ fi
 # Create building directory
 rm -rf $PKG
 mkdir -p $TMP $PKG $OUTPUT 
-
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "[\033[01;32m  Decompress the source tarball  \033[01;37m] "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-sleep 2
-
-# Decompress the source tarball
 cd $TMP
-tar xvf $CWD/$FILE || exit 1
-cd $PKGNAME-$VERSION || exit 1
+
+# git clone
+if [ -e vokoscreen/.git ]; then
+  cd vokoscreen
+  git pull
+else
+  git clone https://github.com/vkohaupt/vokoscreen.git
+  cd vokoscreen
+fi
 
 echo -e "\E[0;32m#####                              \E[0;0m"
 echo -e "\E[0;32m+++++ Start SlackBuild $PKGNAME    \E[0;0m"
 echo -e "\E[0;32m#####                              \E[0;0m"
 
 # Apply some patches
-#patch -p1 < $CWD/patches/Makefile.patch --verbose || exit 1
-
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "[\033[01;32m  Building  package  \033[01;37m] "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-sleep 2
+patch -p1 < $CWD/patches/10_fix_lrelease.patch --verbose || exit 1
 
 # Building  package
-mkdir -p build
-cd build
-  cmake \
-    -DCMAKE_C_FLAGS:STRING="$SLKCFLAGS" \
-    -DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS" \
-    -DCMAKE_INSTALL_PREFIX=/usr \
-    -DOBS_MULTIARCH_SUFFIX="$LIBDIRSUFFIX" \
-    -DUNIX_STRUCTURE=ON \
-    -DUSE_SSL=ON \
-    -DCMAKE_BUILD_TYPE=Release ..
-  make || exit 1
-  make install DESTDIR=$PKG || exit 1
-cd ..
+export LDFLAGS="$SLKLDFLAGS -Wl,--as-needed"
+export CFLAGS="$SLKCFLAGS"
+export CXXFLAGS="$SLKCFLAGS"
+
+qmake-qt5 QT_SELECT=qt5 DEFINES+=NO_NEW_VERSION_CHECK || exit 1
+
+make $JOBS || exit 1
+
+install -Dm 755 "vokoscreen" "$PKG/usr/bin/vokoscreen" || exit 1
+install -Dm 644 "applications/vokoscreen.png" "$PKG/usr/share/pixmaps/vokoscreen.png" || exit 1
+install -Dm 644 "applications/vokoscreen.desktop" "$PKG/usr/share/applications/vokoscreen.desktop" || exit 1
+install -Dm 644 "man/man1/vokoscreen.1.gz" "$PKG/usr/man/man1/vokoscreen.1.gz" || exit 1
 
 # Strip binaries and shared objects, if present
 ( cd $PKG
@@ -145,14 +123,6 @@ if [ -x $CWD/patches ];then
    chmod 644 $PKG/usr/doc/$PKGNAME-$VERSION/SlackBuild/patches/*
 fi
 
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "[\033[01;32m  Building some post-install execution script  \033[01;37m] "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-echo ""
-sleep 2
-
 # Building some post-install execution script 	
 	echo "if [ -x /usr/bin/update-desktop-database ]; then
   /usr/bin/update-desktop-database &> /dev/null
@@ -163,26 +133,11 @@ fi" >> $PKG/install/doinst.sh
 fi" >> $PKG/install/doinst.sh
 	echo "" >> $PKG/install/doinst.sh
 
-# Compress the man pages if present
-if [ -d $PKG/usr/man ]; then
-    ( cd $PKG/usr/man
-      find . -type f -exec gzip -9 {} \;
-      for i in $( find . -type l ) ; do ln -s $( readlink $i ).gz $i.gz ; rm $i ; done
-    )
-fi
-
 # Find and print dependencies into slack-required file
 cd $PKG
 if [ -x /usr/bin/requiredbuilder ];then
    requiredbuilder -y -v -b -s  $CWD $PKG
 fi
-
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "[\033[01;32m  Create txz package  \033[01;37m] "
-echo -e "\033[01;32m  \033[01;37m "
-echo -e "\033[01;32m  \033[01;37m "
-sleep 2
 
 # Create txz package
 ROOTCOMMANDS="set -o errexit -o xtrace ; cd ${PKG} ;
