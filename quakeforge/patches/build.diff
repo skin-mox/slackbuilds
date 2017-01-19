@@ -1,0 +1,11 @@
+--- libs/video/targets/Makefile.in	2012-07-11 07:43:28.000000000 +0200
++++ libs/video/targets/Makefile.in.new	2012-07-12 18:23:30.000000000 +0200
+@@ -159,7 +159,7 @@
+ libQFx11_la_OBJECTS = $(am_libQFx11_la_OBJECTS)
+ libQFx11_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
+ 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(libQFx11_la_CFLAGS) \
+-	$(CFLAGS) $(libQFx11_la_LDFLAGS) $(LDFLAGS) -o $@
++	$(CFLAGS) $(libQFx11_la_LDFLAGS) $(LDFLAGS) -ldl -o $@
+ libvid_common_la_LIBADD =
+ am_libvid_common_la_OBJECTS = libvid_common_la-in_common.lo \
+ 	libvid_common_la-in_event.lo libvid_common_la-keys.lo \

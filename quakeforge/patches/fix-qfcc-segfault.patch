@@ -1,0 +1,31 @@
+--- quakeforge-0.7.2/tools/qfcc/source/class.c	2013-01-23 04:10:55.000000000 +0100
++++ quake-quakeforge-512514ca23c70f9f912eff9336853e3120074267/tools/qfcc/source/class.c	2014-02-03 07:55:08.000000000 +0100
+@@ -642,8 +642,15 @@
+ 	EMIT_STRING (space, meta->name, class->name);
+ 	meta->info = _PR_CLS_META;
+ 	meta->instance_size = type_size (&type_obj_class);
+-	EMIT_DEF (space, meta->ivars,
+-			  emit_ivars (type_obj_class.t.class->ivars, "Class"));
++	if (!class->super_class) {
++		// The ivars list for the meta class struct get emitted only for the
++		// root class of the hierachy.
++		// NOTE: type_obj_class is not actually a class
++		EMIT_DEF (space, meta->ivars,
++				  emit_ivars (type_obj_class.t.symtab, "Class"));
++	} else {
++		meta->ivars = 0;
++	}
+ 	current_class = &class->class_type;
+ 	sym = class_symbol (current_class, 0);
+ 	class->def = def = sym->s.def;
+--- quakeforge-0.7.2/tools/qfcc/source/flow.c	2013-01-23 04:10:55.000000000 +0100
++++ quake-quakeforge-512514ca23c70f9f912eff9336853e3120074267/tools/qfcc/source/flow.c	2014-02-03 07:55:08.000000000 +0100
+@@ -983,7 +983,7 @@
+ 
+ 	if (graph->edges);
+ 		free (graph->edges);
+-	graph->edges = malloc (graph->num_edges * sizeof (flowedge_t *));
++	graph->edges = malloc (graph->num_edges * sizeof (flowedge_t));
+ 	for (j = 0, i = 0; i < graph->num_nodes + 2; i++) {
+ 		node = graph->nodes[i];
+ 		for (succ = set_first (node->successors); succ;
