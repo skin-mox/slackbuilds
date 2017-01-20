@@ -43,7 +43,7 @@ PKGVER=$(echo $VERSION |tr - _)
 MAJORVERSION=$(printf $VERSION | cut -c1-3)
 ARCH=${ARCH:-$(uname -m)}
 JOBS=${JOBS:--j3}
-BUILD=${BUILD:-1}
+BUILD=${BUILD:-2}
 TAG=${TAG:-sm}
 
 SOURCE="http://download.qt.io/official_releases/qt/${MAJORVERSION}/${VERSION}/single/qt-everywhere-opensource-src-${VERSION}.tar.xz"
@@ -182,13 +182,13 @@ export QT_PLUGIN_PATH="${QTDIR}/qtbase/plugins"
   -opensource \
   -prefix /usr \
   -libdir /usr/lib${LIBDIRSUFFIX} \
-  -bindir /usr/lib${LIBDIRSUFFIX}/qt5/bin \
+  -bindir /usr/lib${LIBDIRSUFFIX}/$PKGNAME/bin \
   -sysconfdir /etc/xdg \
-  -headerdir /usr/include/qt5 \
-  -datadir /usr/share/qt5 \
-  -archdatadir /usr/lib${LIBDIRSUFFIX}/qt5 \
-  -docdir /usr/doc/qt5-$PKGVER \
-  -examplesdir /usr/doc/qt5-$PKGVER/examples \
+  -headerdir /usr/include/$PKGNAME \
+  -datadir /usr/share/$PKGNAME \
+  -archdatadir /usr/lib${LIBDIRSUFFIX}/$PKGNAME \
+  -docdir /usr/doc/$PKGNAME-$PKGVER \
+  -examplesdir /usr/doc/$PKGNAME-$PKGVER/examples \
   -system-libpng \
   -system-libjpeg \
   -system-pcre \
@@ -231,6 +231,29 @@ make install INSTALL_ROOT=$PKG || exit
   find . | xargs file | grep "shared object" | grep ELF | cut -f 1 -d : | xargs -r strip --strip-unneeded 2> /dev/null || true
   find . | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs -r strip --strip-unneeded 2> /dev/null || true
 )
+
+cat > $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig/Qt5.pc << EOF
+prefix=/usr/lib${LIBDIRSUFFIX}/$PKGNAME
+bindir=\${prefix}/bin
+datadir=\${prefix}
+docdir=/usr/doc/$PKGNAME-$PKGVER
+archdatadir=\${prefix}
+examplesdir=\${prefix}/examples
+headerdir=/usr/include/$PKGNAME
+importdir=\${prefix}/imports
+qmldir=\${prefix}/qml
+libdir=/usr/lib${LIBDIRSUFFIX}
+libexec=\${prefix}/libexec
+moc=\${bindir}/moc
+plugindir=\${prefix}/plugins
+qmake=\${bindir}/qmake
+sysconfdir=/etc/xdg
+translationdir=\${prefix}/translations
+
+Name: Qt5
+Description: Qt5 Configuration
+Version: $VERSION
+EOF
 
 # Fix the path in prl files:
 find "$PKG/usr/lib${LIBDIRSUFFIX}" -type f -name '*.prl' \
@@ -278,7 +301,7 @@ cat <<EOF > $PKG/usr/share/applications/qt5-designer.desktop
 Name=Qt5 Designer
 GenericName=Interface Designer
 Comment=Design GUIs for Qt5 applications
-Exec=designer-qt5 -qt=5
+Exec=designer-qt5
 Icon=qt5-designer
 MimeType=application/x-designer;
 Terminal=false
@@ -290,7 +313,7 @@ cat <<EOF > $PKG/usr/share/applications/qt5-assistant.desktop
 [Desktop Entry]
 Name=Qt5 Assistant 
 Comment=Shows Qt5 documentation and examples
-Exec=assistant-qt5 -qt=5
+Exec=assistant-qt5
 Icon=qt5-assistant
 Terminal=false
 Encoding=UTF-8
@@ -301,7 +324,7 @@ cat <<EOF > $PKG/usr/share/applications/qt5-linguist.desktop
 [Desktop Entry]
 Name=Qt5 Linguist 
 Comment=Add translations to Qt5 applications
-Exec=linguist-qt5 -qt=5
+Exec=linguist-qt5
 Icon=qt5-linguist
 MimeType=text/vnd.trolltech.linguist;application/x-linguist;
 Terminal=false
@@ -355,17 +378,6 @@ fi" >> $PKG/install/doinst.sh
   /usr/bin/gtk-update-icon-cache  -f -q /usr/share/icons/hicolor &> /dev/null
 fi" >> $PKG/install/doinst.sh
 	echo "" >> $PKG/install/doinst.sh
-
-# Add a documentation directory:
-mkdir -p $PKG/usr/doc/$PKGNAM-$PKGVER
-cp -a \
-  README qtbase/{header*,LGPL_EXCEPTION.txt,LICENSE*} \
-  $PKG/usr/doc/$PKGNAM-$PKGVER
-if [ -d $PKG/usr/lib${LIBDIRSUFFIX}/qt5/doc/html ]; then
-  ( cd $PKG/usr/doc/$PKGNAM-$PKGVER
-    ln -sf /usr/lib${LIBDIRSUFFIX}/qt5/doc/html .
-  )
-fi
 
 # Find and print dependencies into slack-required file
 cd $PKG
